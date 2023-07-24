@@ -4,5 +4,5 @@ namespace API.Services.Interfaces;
 
 public interface IUploadService
 {
-    Task<Response> HandleUpload(IFormFile file);
+    Task<Response> HandleUpload(FileDto files);
 }

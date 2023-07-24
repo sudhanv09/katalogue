@@ -33,15 +33,12 @@ namespace API.Migrations
                         .HasColumnType("text");
 
                     b.Property<byte[]>("Cover")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("OLID")
-                        .IsRequired()
+                    b.Property<string>("Olid")
                         .HasColumnType("text");
 
                     b.Property<int>("Status")

@@ -22,17 +22,23 @@ public class UploadController : Controller
             return BadRequest(new Response{Success = false, ErrorCode = "1", Error = "No file uploaded"});
         }
 
-        if (Path.GetExtension(dto.file.FileName) != ".epub")
-        {
-            return BadRequest(new Response { ErrorCode = "2", Error = "Wrong File Extension. Epub Only" });
-        }
 
-        var response = await _upload.HandleUpload(dto.file);
-        if (!response.Success)
-        {
-            return BadRequest(new Response { Error = "some shit happened" });
-        }
+        var complete = new List<Response>();
 
-        return Ok(response);
+        foreach (var file in dto.file)
+        {
+            if (Path.GetExtension(file.FileName) != ".epub")
+            {
+                return BadRequest(new Response { Success = false, ErrorCode = "2", Error = "Wrong File Extension. Epub Only" });
+            }
+            var response = await _upload.HandleUpload(dto);
+            if (!response.Success)
+            {
+                return BadRequest(new Response { Error = "some shit happened" });
+            }
+            
+            complete.Add(response);
+        }
+        return Ok(complete);
     }
 }
