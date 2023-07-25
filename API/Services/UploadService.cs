@@ -1,6 +1,7 @@
 
 using API.Data;
 using API.Models;
+using API.Models.Dto;
 using API.Services.Interfaces;
 using VersOne.Epub;
 
@@ -16,40 +17,57 @@ public class UploadService : IUploadService
         _ctx = ctx;
     }
     
-    /*
-     * HandleUpload has 2 functions. 
-     * Save uploaded file to localstorage and track the file with DB
-     */
     public async Task<Response> HandleUpload(FileDto files)
     {
+        var uploadSuccess = new List<Response>();
         foreach (var file in files.file)
         {
-            var generateGuid = Guid.NewGuid();
-            var epubData = EpubReader.ReadBook(file.OpenReadStream());
-        
-            var bookData = new Book {
-                Id = generateGuid,
-                Title = epubData.Title,
-                Author = epubData.Author,
-                Description = epubData.Description,
-                Status = ReadingStatus.ToRead
-            };
+            if (FileExists(file))
+            {
+                return new Response { Success = false, ErrorCode = "3", Error = "File already exists" };
+            }
+            var bookData = GetEpubMetadata(file);
         
             // write to db
-            // _ctx.Books.Add(bookData);
-            // await _ctx.SaveChangesAsync();
+            _ctx.Books.Add(bookData);
+            await _ctx.SaveChangesAsync();
         
             // write to dir
             if (!Directory.Exists(libPath))
                 Directory.CreateDirectory(libPath);
             
-            var writeLocation = Directory.CreateDirectory(Path.Combine(libPath, generateGuid.ToString())).ToString();
+            var writeLocation = Directory.CreateDirectory(Path.Combine(libPath, bookData.Id.ToString())).ToString();
             var fullPath = Path.Combine(writeLocation, file.FileName);
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
         }
-        return new Response { Success = true };
+        return new Response {Success = true, SuccessMessage = "Uploaded all files successfully"};
     }
+
+    public bool FileExists(IFormFile file)
+    {
+        var bookName = GetEpubMetadata(file);
+        var exists = _ctx.Books.Find(bookName.Title);
+        if (exists is null)
+            return false;
+        return true;
+    }
+
+    public Book GetEpubMetadata(IFormFile file)
+    {
+        var generateGuid = Guid.NewGuid();
+        var epubData = EpubReader.ReadBook(file.OpenReadStream());
+        
+        var bookData = new Book {
+            Id = generateGuid,
+            Title = epubData.Title,
+            Author = epubData.Author,
+            Description = epubData.Description,
+            Status = ReadingStatus.ToRead
+        };
+        return bookData;
+    }
+    
 }

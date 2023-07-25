@@ -1,0 +1,6 @@
+API/bin/Debug/net6.0
+API/obj
+Client/node_modules
+API.Test/obj/
+.idea/.idea.katalogue.dir/.idea
+API.Test/obj

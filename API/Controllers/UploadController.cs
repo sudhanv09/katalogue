@@ -1,4 +1,5 @@
 using API.Models;
+using API.Models.Dto;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,27 +19,18 @@ public class UploadController : Controller
     public async Task<IActionResult> HandleIncomingFile([FromForm] FileDto dto)
     {
         if (dto is null)
-        {
             return BadRequest(new Response{Success = false, ErrorCode = "1", Error = "No file uploaded"});
-        }
-
-
-        var complete = new List<Response>();
-
+        
         foreach (var file in dto.file)
         {
             if (Path.GetExtension(file.FileName) != ".epub")
-            {
                 return BadRequest(new Response { Success = false, ErrorCode = "2", Error = "Wrong File Extension. Epub Only" });
-            }
-            var response = await _upload.HandleUpload(dto);
-            if (!response.Success)
-            {
-                return BadRequest(new Response { Error = "some shit happened" });
-            }
-            
-            complete.Add(response);
         }
-        return Ok(complete);
+        
+        var response = await _upload.HandleUpload(dto);
+        if (!response.Success)
+            return BadRequest(new Response { Error = "some shit happened" });
+        
+        return Ok(response);
     }
 }
