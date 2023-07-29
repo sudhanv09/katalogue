@@ -20,12 +20,20 @@ public class LibraryService : ILibraryService
 
     public async Task<Book> GetBookById(string id)
     {
-        return await _ctx.Books.FirstOrDefaultAsync(i => i.Id.Equals(id));
+        var isValidGuid = Guid.TryParse(id, out Guid newId);
+        if (!isValidGuid)
+            return null;
+        return await _ctx.Books.FirstOrDefaultAsync(i => i.Id == newId);
     }
 
-    public async Task<Book> GetAuthor(string author)
+    public async Task<List<Book>> GetBooksByAuthor(string author)
     {
-        return await _ctx.Books.FirstOrDefaultAsync(a => a.Author == author);
+        return await _ctx.Books.Where(a => a.Author == author).ToListAsync();
+    }
+
+    public async Task<Book> GetBookByTitle(string name)
+    {
+        return await _ctx.Books.FirstOrDefaultAsync(a => a.Title == name);
     }
 
     public async Task<List<Book>> GetReading()

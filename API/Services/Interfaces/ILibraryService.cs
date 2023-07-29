@@ -6,7 +6,8 @@ public interface ILibraryService
 {
     Task<List<Book>> GetAllBooks();
     Task<Book> GetBookById(string id);
-    Task<Book> GetAuthor(string author);
+    Task<List<Book>> GetBooksByAuthor(string author);
+    Task<Book> GetBookByTitle(string name);
     
     Task<List<Book>> GetReading();
     Task<List<Book>> GetUserReadList();

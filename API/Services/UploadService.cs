@@ -1,8 +1,8 @@
-
 using API.Data;
 using API.Models;
 using API.Models.Dto;
 using API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using VersOne.Epub;
 
 namespace API.Services;
@@ -19,13 +19,11 @@ public class UploadService : IUploadService
     
     public async Task<Response> HandleUpload(FileDto files)
     {
-        var uploadSuccess = new List<Response>();
         foreach (var file in files.file)
         {
             if (FileExists(file))
-            {
                 return new Response { Success = false, ErrorCode = "3", Error = "File already exists" };
-            }
+         
             var bookData = GetEpubMetadata(file);
         
             // write to db
@@ -49,10 +47,8 @@ public class UploadService : IUploadService
     public bool FileExists(IFormFile file)
     {
         var bookName = GetEpubMetadata(file);
-        var exists = _ctx.Books.Find(bookName.Title);
-        if (exists is null)
-            return false;
-        return true;
+        var exists = _ctx.Books.Any(t=>t.Title == bookName.Title);
+        return exists;
     }
 
     public Book GetEpubMetadata(IFormFile file)
@@ -69,5 +65,4 @@ public class UploadService : IUploadService
         };
         return bookData;
     }
-    
 }

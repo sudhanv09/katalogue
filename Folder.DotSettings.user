@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=82d7895c_002D228b_002D4d5f_002Dae0c_002D8ac0a1f78f78/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetBookById_Returns_List" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::0F0AA9CC-2FAD-EE2A-8C3C-153476CDE1C6::net6.0::API.Test.ServicesTest.LibraryServiceTest.GetBookById_Returns_List&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::0F0AA9CC-2FAD-EE2A-8C3C-153476CDE1C6::net6.0::API.Test.ServicesTest.LibraryServiceTest.GetBookById_Returns_Null&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::0F0AA9CC-2FAD-EE2A-8C3C-153476CDE1C6::net6.0::API.Test.ServicesTest.LibraryServiceTest.GetBookById_Returns_BadRequest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

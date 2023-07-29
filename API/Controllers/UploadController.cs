@@ -29,7 +29,7 @@ public class UploadController : Controller
         
         var response = await _upload.HandleUpload(dto);
         if (!response.Success)
-            return BadRequest(new Response { Error = "some shit happened" });
+            return BadRequest(response);
         
         return Ok(response);
     }
