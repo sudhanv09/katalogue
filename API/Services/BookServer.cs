@@ -1,3 +1,4 @@
+using System.Text;
 using API.Services.Interfaces;
 using HtmlAgilityPack;
 using VersOne.Epub;
@@ -15,17 +16,43 @@ public class BookServer : IBookServer
         return Directory.GetFiles(Path.Combine(libPath, id))[0];
     }
 
-    public HtmlDocument GetEbookChapterBody(string id, int chapter)
+    public string GetEbookChapterBody(string id, int chapter)
     {
         var bookPath = GetBookFromStorage(id);
         var book = EpubReader.ReadBook(bookPath);
-        HtmlDocument document = new HtmlDocument();
         
+        HtmlDocument document = new HtmlDocument();
+        StringBuilder sb = new StringBuilder();
         document.LoadHtml(book.ReadingOrder[chapter].Content);
-        document.DocumentNode.SelectNodes("//body");
+        
+        var nodes = document.DocumentNode.SelectNodes("//body");
 
-        return document;
+        foreach (var node in nodes)
+        {
+            sb.AppendLine(node.InnerHtml);
+        }
+        
+        return sb.ToString();
     }
-    
-    
+
+    public string GetToc(string id)
+    {
+        var bookPath = GetBookFromStorage(id);
+        var book = EpubReader.ReadBook(bookPath);
+        var titles = new StringBuilder();
+        
+        foreach (var item in book.Navigation)
+        {
+            // Navigation returns Headings
+            titles.AppendLine(item.Title);
+            
+            // NestedItems has Sub-Headings
+            foreach (var sub in item.NestedItems)
+            {
+                titles.AppendLine(sub.Title);
+            }
+        }
+
+        return titles.ToString();
+    }
 }

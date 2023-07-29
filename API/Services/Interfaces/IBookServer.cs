@@ -5,5 +5,6 @@ namespace API.Services.Interfaces;
 public interface IBookServer
 {
    string GetBookFromStorage(string id);
-   HtmlDocument GetEbookChapterBody(string id, int chapter);
+   string GetEbookChapterBody(string id, int chapter);
+   string GetToc(string id);
 }
