@@ -15,6 +15,11 @@ public class UploadController : Controller
         _upload = upload;
     }
     
+    /// <summary>
+    /// Add file to library
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> HandleIncomingFile([FromForm] FileDto dto)
     {

@@ -26,7 +26,7 @@ public class LibraryServiceTest
         var bookId = Guid.NewGuid();
         var bookData = A.Fake<Book>();
 
-        A.CallTo(() => _library.GetBookById(bookId.ToString())).Returns(bookData);
+        A.CallTo(() => _library.GetBookById(bookId.ToString())).Returns(Task.FromResult(bookData));
         var controller = new LibraryController(_library);
 
         // Act
@@ -43,7 +43,7 @@ public class LibraryServiceTest
         // Arrange
         var bookId = "30e1ec20-e97b-4906-a663-147c1f8d02";
         Book returnVal = null;
-        A.CallTo(() => _library.GetBookById(bookId.ToString())).Returns(returnVal);
+        A.CallTo(() => _library.GetBookById(bookId.ToString())).Returns(Task.FromResult(returnVal));
         var controller = new LibraryController(_library);
 
         // Act

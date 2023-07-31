@@ -14,12 +14,21 @@ public class LibraryController : Controller
     }
     public ILibraryService _lib { get; set; }
     
+    /// <summary>
+    /// Get all the books in your library
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetAllBooks()
     {
         return Ok(await _lib.GetAllBooks());
     }
     
+    /// <summary>
+    /// Get Book with Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTitleById(string id)
     {
@@ -29,6 +38,11 @@ public class LibraryController : Controller
         return Ok(response);
     }
 
+    /// <summary>
+    /// Get Book By Name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     [HttpGet("title")]
     public async Task<IActionResult> GetTitle(string name)
     {
@@ -39,6 +53,11 @@ public class LibraryController : Controller
         return Ok(result);
     }
 
+    /// <summary>
+    /// Get All titles by author
+    /// </summary>
+    /// <param name="author"></param>
+    /// <returns></returns>
     [HttpGet("author")]
     public async Task<IActionResult> GetAuthor(string author)
     {
@@ -47,6 +66,11 @@ public class LibraryController : Controller
             return NotFound("Author Not found");
         return Ok(result);
     }
+    
+    /// <summary>
+    /// Get all books to be read
+    /// </summary>
+    /// <returns></returns>
 
     [HttpGet("to-read")]
     public async Task<List<Book>> GetReadList()
@@ -54,11 +78,20 @@ public class LibraryController : Controller
         return await _lib.GetUserReadList();
     }
     
+    /// <summary>
+    /// Get all the books which have been read 
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("finished")]
     public async Task<List<Book>> GetRead()
     {
         return await _lib.GetFinishedList();
     }
+    
+    /// <summary>
+    /// Get all books currently being read
+    /// </summary>
+    /// <returns></returns>
     
     [HttpGet("reading")]
     public async Task<List<Book>> GetReading()

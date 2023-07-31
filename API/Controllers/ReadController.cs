@@ -14,6 +14,12 @@ public class ReadController : Controller
         _book = book;
     }
 
+    /// <summary>
+    /// Get specific chapter from a book
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="chapter"></param>
+    /// <returns></returns>
     [HttpGet("{chapter}")]
     public IActionResult GetChapter(string id, int chapter)
     {
@@ -22,6 +28,12 @@ public class ReadController : Controller
 
         return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
     }
+    
+    /// <summary>
+    /// Get TOC of the book
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     
     [HttpGet("toc")]
     public IActionResult GetToc(string id)

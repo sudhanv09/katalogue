@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ControllerTests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\API\API.csproj" />
   </ItemGroup>
 
