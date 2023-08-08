@@ -13,7 +13,8 @@ public class BookServer : IBookServer
     public string GetBookFromStorage(string id)
     {
         // Each directory only has 1 file
-        return Directory.GetFiles(Path.Combine(libPath, id))[0];
+        var path = Path.Combine(libPath, id);
+        return Directory.GetFiles(path, "*.epub")[0];
     }
 
     public string GetEbookChapterBody(string id, int chapter)
@@ -52,7 +53,6 @@ public class BookServer : IBookServer
                 titles.AppendLine(sub.Title);
             }
         }
-
         return titles.ToString();
     }
 }

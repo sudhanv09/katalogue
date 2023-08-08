@@ -1,8 +1,8 @@
+using System.Drawing;
 using API.Data;
 using API.Models;
 using API.Models.Dto;
 using API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using VersOne.Epub;
 
 namespace API.Services;
@@ -43,7 +43,7 @@ public class UploadService : IUploadService
         }
         return new Response {Success = true, SuccessMessage = "Uploaded all files successfully"};
     }
-
+    
     public bool FileExists(IFormFile file)
     {
         var bookName = GetEpubMetadata(file);
@@ -61,6 +61,7 @@ public class UploadService : IUploadService
             Title = epubData.Title,
             Author = epubData.Author,
             Description = epubData.Description,
+            Cover = epubData.CoverImage,
             Status = ReadingStatus.ToRead
         };
         return bookData;
