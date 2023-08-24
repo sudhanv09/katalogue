@@ -1,13 +1,14 @@
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script lang="ts">
+	import type { PageData } from "./$types";
+    
+    export let data: PageData;
 
-<div class="container h-full mx-auto flex justify-center items-center">
-	<div class="space-y-5">
-		<h1 class="h1">Let's get cracking bones!</h1>
-		<p>Start by exploring:</p>
-		<ul>
-			<li><code class="code">/src/routes/+layout.svelte</code> - barebones layout, the CSS import order is critical!</li>
-			<li><code class="code">/src/app.postcss</code> - minimal css to make the page full screen, may not be relevant for your project</li>
-			<li><code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents</li>
-		</ul>
-	</div>
-</div>
+</script>
+
+{#each data.books as book}
+    <h1>{book.author}</h1>
+    <h1>{book.title}</h1>
+    <h1>{book.status}</h1>
+    <img src="{`data:image/jpeg;base64,${book.cover}`}" alt="cover" width="150" height="150">
+{/each}
+
