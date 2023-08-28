@@ -4,9 +4,10 @@
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	// Most of your app wide CSS should be put in this file
-	import '../app.postcss';
+	import '../../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import SideBar from '$lib/components/SideBar.svelte';
+	import Header from '$lib/components/Header.svelte';
 </script>
 
 <AppShell>
@@ -14,6 +15,7 @@
 		<AppBar class="text-3xl ps-6"> 
 			<a href="/">Katalogue</a>
 		</AppBar>
+		<Header />
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft"><SideBar /></svelte:fragment>
 

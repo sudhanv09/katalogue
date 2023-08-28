@@ -10,4 +10,5 @@ public class Book
     public byte[]? Cover { get; set; }
 
     public ReadingStatus Status { get; set; }
+    public int Progress { get; set; }
 }
