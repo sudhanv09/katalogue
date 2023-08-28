@@ -6,13 +6,12 @@
 </script>
 
 <div class="w-32 flex flex-col space-y-6 pt-8 ml-8">
-    <a href="/">Books</a>
-    <a href="/">Authors</a>
-    <a href="/">Genres</a>
+    <a href="/books">Books</a>
+    <a href="/authors">Authors</a>
     
     <hr />
     
     <a href="/">Reading</a>
-    <a href="/">To Read</a>
-    <a href="/">Finished</a>
+    <a href="/toread">To Read</a>
+    <a href="/finished">Finished</a>
 </div>

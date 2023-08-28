@@ -1,23 +1,11 @@
 import type { Actions, PageServerLoad } from "./$types";
-
-interface Book {
-    id: string;
-    olid: string;
-    title: string;
-    author: string;
-    description: string;
-    cover: string;
-    status: number;
-};
-
+import type {Book} from '$lib/types';
 
 
 export const load: PageServerLoad = async () => {
 
-    const booksResult: Book[] = await fetch('http://localhost:5050/library').then(res => res.json());
-
-    console.log(booksResult)
-    return { books: booksResult };
-    
+    const booksResult: Book[] = await fetch('http://localhost:5050/library/reading').then(res => res.json());
+        
+    return { books: booksResult};
 };
 
