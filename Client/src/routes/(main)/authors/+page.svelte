@@ -9,10 +9,11 @@ import type { PageData } from './$types';
 	<h1 class="p-4 mt-4 text-3xl font-semibold">Authors</h1>
 	<hr class="mt-1" />
 	<ul class="p-4 ml-6">
-		{#each data.authors as book}
+		{#each data.authors as author}
 			<li class="my-4">
-				<a href="/authors/{book.author}" class="text-xl">{book.author}</a>
+				<a href="/authors/{author}" class="text-xl">{author}</a>
 			</li>
 		{/each}
 	</ul>
 </div>
+

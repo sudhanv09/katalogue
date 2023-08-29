@@ -1,4 +1,5 @@
 using System.Text;
+using API.Models;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +41,30 @@ public class ReadController : Controller
     {
         var Toc = _book.GetToc(id);
         return Ok(Toc);
+    }
+
+    /// <summary>
+    /// Start Reading a book from the beginning.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("start")]
+    public IActionResult StartBook(string id)
+    {
+        var start = _book.StartBook(id);
+        return Ok(start);
+    }
+    
+    /// <summary>
+    /// Go to new chapter in the book
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("next")]
+    public async Task<IActionResult> NextChapter(string id)
+    {
+        var next = await _book.NextChapter(id);
+        return Ok(next);
     }
     
 }

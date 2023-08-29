@@ -36,6 +36,14 @@ public class LibraryService : ILibraryService
         return await _ctx.Books.FirstOrDefaultAsync(a => a.Title == name);
     }
 
+    public async Task<HashSet<string>> GetAllAuthors()
+    {
+        var authorlist = await _ctx.Books.Select(a => a.Author).ToListAsync();
+        var unique = new HashSet<string>(authorlist);
+
+        return unique;
+    }
+
     public async Task<List<Book>> GetReading()
     {
         return await _ctx.Books.Where(b => b.Status == ReadingStatus.Reading).ToListAsync();
@@ -51,10 +59,5 @@ public class LibraryService : ILibraryService
         return await _ctx.Books.Where(b => b.Status == ReadingStatus.Finished).ToListAsync();
     }
 
-    public async Task MarkStatus(string id, ReadingStatus status)
-    {
-        var book = await _ctx.Books.FirstOrDefaultAsync(i => i.Id.Equals(id));
-        book.Status = status;
-        await _ctx.SaveChangesAsync();
-    }
+    
 }

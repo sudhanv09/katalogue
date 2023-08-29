@@ -69,6 +69,19 @@ public class LibraryController : Controller
     }
     
     /// <summary>
+    /// Get author list
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("authorlist")]
+    public async Task<IActionResult> GetAuthorList()
+    {
+        var result = await _lib.GetAllAuthors();
+        if (result.Count == 0)
+            return NotFound("Empty List");
+        return Ok(result);
+    }
+    
+    /// <summary>
     /// Get all books to be read
     /// </summary>
     /// <returns></returns>
