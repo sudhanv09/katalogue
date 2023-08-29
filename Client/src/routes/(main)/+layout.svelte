@@ -1,26 +1,22 @@
-<script lang='ts'>
-	// The ordering of these imports is critical to your app working properly
-	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
-	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
-	import '@skeletonlabs/skeleton/styles/skeleton.css';
-	// Most of your app wide CSS should be put in this file
+<script lang="ts">
 	import '../../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Toast } from '@skeletonlabs/skeleton';
 	import SideBar from '$lib/components/SideBar.svelte';
 	import Header from '$lib/components/Header.svelte';
+
+	import { initializeStores } from '@skeletonlabs/skeleton';
+	initializeStores();
 </script>
 
+<Toast />
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar class="text-3xl ps-6"> 
+		<AppBar class="text-3xl ps-6">
 			<a href="/">Katalogue</a>
 		</AppBar>
-		<Header />
 	</svelte:fragment>
+	<svelte:fragment slot="pageHeader"><Header /></svelte:fragment>
 	<svelte:fragment slot="sidebarLeft"><SideBar /></svelte:fragment>
 
 	<slot />
 </AppShell>
-
-
-

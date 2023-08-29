@@ -10,7 +10,9 @@
 	<hr class="mt-2" />
 	<div class="grid grid-cols-5">
 		{#each data.books as book}
+			<a href="/books/{book.id}">
 				<BookCard {book} />
+			</a>
 		{/each}
 	</div>
 </div>

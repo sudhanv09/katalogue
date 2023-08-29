@@ -1,15 +1,10 @@
 <script>
 
 	import { FileButton } from "@skeletonlabs/skeleton";
+    import {handleFileUpload} from "../FileUpload";
 
 </script>
 
-<!-- TODO Implement FileUpload
-    TODO Implement Edit    
--->
-
-<div class="w-full mt-4 mx-6 space-x-4 flex justify-start ">
-    <FileButton name="files" button="variant-filled">Add</FileButton>
-    <button type="button" class="btn variant-filled">Remove</button>    <!-- TODO idk about Remove -->
-    <button type="button" class="btn variant-filled">Edit</button>
+<div class="w-full mt-4 p-4 flex justify-end">
+    <FileButton name="files" button="btn variant-filled" on:change={handleFileUpload} multiple accept=".epub"> Add</FileButton>
 </div>
