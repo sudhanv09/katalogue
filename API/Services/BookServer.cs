@@ -26,10 +26,10 @@ public class BookServer : IBookServer
         return Directory.GetFiles(path, "*.epub")[0];
     }
     
-    public string GetEbookChapterBody(string id, int chapter)
+    public async Task<string> GetEbookChapterBody(string id, int chapter)
     {
         var bookPath = GetBookFromStorage(id);
-        var book = EpubReader.ReadBook(bookPath);
+        var book = await EpubReader.ReadBookAsync(bookPath);
         
         HtmlDocument document = new HtmlDocument();
         StringBuilder sb = new StringBuilder();
@@ -41,6 +41,21 @@ public class BookServer : IBookServer
         {
             sb.AppendLine(node.InnerHtml);
         }
+        return sb.ToString();
+    }
+
+    public async Task<string> GetBookCss(string id)
+    {
+        var bookPath = GetBookFromStorage(id);
+        var book = await EpubReader.ReadBookAsync(bookPath);
+        StringBuilder sb = new StringBuilder();
+
+        var bookCss = book.Content.Css.Local;
+        foreach (var css in bookCss)
+        {
+            sb.AppendLine(css.Content);
+        }
+
         return sb.ToString();
     }
 
@@ -65,25 +80,34 @@ public class BookServer : IBookServer
         return titles.ToString();
     }
 
-    public string StartBook(string id)
+    public async Task<string> StartBook(string id)
     {
-        var markStart = MarkStatus(id, ReadingStatus.Reading);
-        
-        // Start from the beginning
-        var bookContent = GetEbookChapterBody(id, 0);
-        return bookContent;
+        var bookProgress = await GetProgress(id);
+        if (bookProgress == 0)
+        {
+            MarkStatus(id, ReadingStatus.Reading);
+            
+        }
+        var content = await GetEbookChapterBody(id, bookProgress);
+        return content;
     }
 
     public async Task<string> NextChapter(string id)
     {
-        var isValidGuid = Guid.TryParse(id, out Guid newId);
-        if (!isValidGuid)
-            return null;
-        
-        var bookProgress = await _ctx.Books.Where(i => i.Id == newId).Select(p => p.Progress).FirstOrDefaultAsync();
+        var bookProgress = await GetProgress(id);
         var trackProgress = bookProgress + 1;
         await UpdateProgress(id, trackProgress);
-        return GetEbookChapterBody(id, trackProgress);
+        return await GetEbookChapterBody(id, trackProgress);
+    }
+
+    public async Task<int> GetProgress(string id)
+    {
+        var isValidGuid = Guid.TryParse(id, out Guid newId);
+        if (!isValidGuid)
+            return 0; // TODO change the return to something better.
+        
+        var bookProgress = await _ctx.Books.Where(i => i.Id == newId).Select(p => p.Progress).FirstOrDefaultAsync();
+        return bookProgress;
     }
 
     public async Task UpdateProgress(string id, int progress)

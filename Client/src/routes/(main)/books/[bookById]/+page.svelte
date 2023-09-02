@@ -22,5 +22,8 @@
 		<p>
 			{description}
 		</p>
+		<button class="btn variant-filled"><a href="/read/{data.book.id}">Read</a></button>
+		<button class="btn variant-filled mx-4">Edit</button>
+		
 	</div>
 </div>

@@ -22,12 +22,14 @@ public class ReadController : Controller
     /// <param name="chapter"></param>
     /// <returns></returns>
     [HttpGet("{chapter}")]
-    public IActionResult GetChapter(string id, int chapter)
+    public async Task<IActionResult> GetChapter(string id, int chapter)
     {
-        var bookText = _book.GetEbookChapterBody(id, chapter);
-        var toBytes = Encoding.UTF8.GetBytes(bookText);
-
-        return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
+        var bookText = await _book.GetEbookChapterBody(id, chapter);
+        
+        // var toBytes = Encoding.UTF8.GetBytes(bookText);
+        // return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
+        
+        return Ok(bookText);
     }
     
     /// <summary>
@@ -35,23 +37,34 @@ public class ReadController : Controller
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    
     [HttpGet("toc")]
     public IActionResult GetToc(string id)
     {
-        var Toc = _book.GetToc(id);
-        return Ok(Toc);
+        var toc = _book.GetToc(id);
+        return Ok(toc);
     }
 
+    /// <summary>
+    /// Get css for the book
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("book-css")]
+    public async Task<IActionResult> GetCss(string id)
+    {
+        var css = await _book.GetBookCss(id);
+        return Ok(css);
+    }
+    
     /// <summary>
     /// Start Reading a book from the beginning.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("start")]
-    public IActionResult StartBook(string id)
+    public async Task<IActionResult> StartBook(string id)
     {
-        var start = _book.StartBook(id);
+        var start = await _book.StartBook(id);
         return Ok(start);
     }
     
