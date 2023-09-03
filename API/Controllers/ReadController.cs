@@ -25,11 +25,8 @@ public class ReadController : Controller
     public async Task<IActionResult> GetChapter(string id, int chapter)
     {
         var bookText = await _book.GetEbookChapterBody(id, chapter);
-        
-        // var toBytes = Encoding.UTF8.GetBytes(bookText);
-        // return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
-        
-        return Ok(bookText);
+        var toBytes = Encoding.UTF8.GetBytes(bookText);
+        return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
     }
     
     /// <summary>
@@ -53,7 +50,7 @@ public class ReadController : Controller
     public async Task<IActionResult> GetCss(string id)
     {
         var css = await _book.GetBookCss(id);
-        return Ok(css);
+        return Content(css, "text/css", Encoding.UTF8);
     }
     
     /// <summary>

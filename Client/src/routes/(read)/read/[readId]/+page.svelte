@@ -1,15 +1,17 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
+	import '$src/app.postcss';
 
 	export let data: PageData;
+
+	const url = $page.url.pathname;
+	const id = url.split('/').pop();
 
 	async function handleKeyPress(event: KeyboardEvent) {
 		if (event.key === 'n') {
 			const req = async () => {
-				const params = window.location.href.split('/');
-				const url = params[params.length - 1];
-
-				const getData = await fetch(`http://localhost:5050/read/next?id=${url}`);
+				const getData = await fetch(`http://localhost:5050/read/next?id=${id}`);
 				const data = await getData.text();
 				return data;
 			};
@@ -18,18 +20,18 @@
 
 			return (data.content = response);
 		}
+		else if (event.key === ' ') {
+			// TODO Implement scrolling
+		}
 	}
 </script>
 
-<!-- TODO Implement scrolling with spacebar
-    TODO Implement scroll restore
--->
 <svelte:window on:keydown={handleKeyPress} />
 
-<div id="main-content-body" data-sveltekit-noscroll>
+<svelte:head>
+	<link rel="stylesheet" href={`http://localhost:5050/read/book-css?id=${id}`}>
+</svelte:head>
+
+<div id="main-content-body">
 	{@html data.content}
 </div>
-
-<!-- <style>
-	{data.css}
-</style> -->

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../../app.postcss';
+	import '$src/app.postcss';
 	import { AppShell, AppBar, Toast } from '@skeletonlabs/skeleton';
 	import SideBar from '$lib/components/SideBar.svelte';
 
