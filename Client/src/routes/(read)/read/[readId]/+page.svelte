@@ -4,9 +4,12 @@
 	import {nextChapter} from "$lib/ReadKeybindUtils";
 	import {goto} from "$app/navigation";
 	import "$src/app.postcss";
+	import {getModalStore, getDrawerStore, type DrawerSettings, type ModalSettings} from "@skeletonlabs/skeleton";
 
 	export let data: PageData;
 	let scrollContent : HTMLDivElement;
+	const modalStore = getModalStore();
+	const drawerStore = getDrawerStore();
 
 	const url = $page.url.pathname;
 	const id = url.split('/').pop();
@@ -21,9 +24,22 @@
 				break;
 			case "q":
 				goto("/");
+				break;
 			case "h":
-				console.log("help");
-				
+				const modal: ModalSettings = {
+					type: "component",
+					component: "keybindModal"
+				}
+				modalStore.trigger(modal);
+				break;
+			case "t":
+				const drawer: DrawerSettings = {
+					id: "toc-drawer",
+					width: "w-[480px]",
+					meta: {data: data.toc}
+				}	
+				drawerStore.open(drawer);
+				break;
 		}
 	}
 </script>
@@ -36,7 +52,7 @@
 
 <div
 	bind:this={scrollContent}
-	class="columns-3 col-fill-auto w-full h-screen py-4 overflow-x-scroll"
+	class="columns-3 col-fill-auto w-full h-screen p-4 overflow-x-scroll"
 >
 	{@html data.content}
 </div>

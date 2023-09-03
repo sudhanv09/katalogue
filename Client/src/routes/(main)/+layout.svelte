@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '$src/app.postcss';
-	import { AppShell, AppBar, Toast } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Toast, Modal } from '@skeletonlabs/skeleton';
 	import SideBar from '$lib/components/SideBar.svelte';
 
 	import { initializeStores } from '@skeletonlabs/skeleton';
@@ -8,6 +8,7 @@
 </script>
 
 <Toast />
+<Modal />
 
 <AppShell>
 	<svelte:fragment slot="header">
