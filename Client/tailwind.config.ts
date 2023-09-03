@@ -24,7 +24,8 @@ const config = {
 			themes: {
 				preset: ["crimson", "skeleton"]
 			}
-		})
+		}),
+		require("tailwindcss-multi-column")(),
 	]
 } satisfies Config;
 
