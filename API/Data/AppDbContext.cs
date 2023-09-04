@@ -11,4 +11,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Book> Books { get; set; }
+    public DbSet<UserWishlist> Wishlists { get; set; }
+    
 }

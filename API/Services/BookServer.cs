@@ -60,24 +60,26 @@ public class BookServer : IBookServer
     }
 
     // TODO: Navigate to Headings
-    public string GetToc(string id)
+    public List<string> GetToc(string id)
     {
         var bookPath = GetBookFromStorage(id);
         var book = EpubReader.ReadBook(bookPath);
-        var titles = new StringBuilder();
+        var titles = new List<string>();
         
         foreach (var item in book.Navigation)
         {
             // Navigation returns Headings
-            titles.AppendLine(item.Title);
-            
-            // NestedItems has Sub-Headings
-            foreach (var sub in item.NestedItems)
+            titles.Add(item.Title);
+
+            if (item.NestedItems.Count > 0 )
             {
-                titles.AppendLine(sub.Title);
+                foreach (var sub in item.NestedItems)
+                {
+                    titles.Add(sub.Title);
+                }    
             }
         }
-        return titles.ToString();
+        return titles;
     }
 
     public async Task<string> StartBook(string id)
