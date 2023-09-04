@@ -11,4 +11,5 @@ public class Book
 
     public ReadingStatus Status { get; set; }
     public int Progress { get; set; }
+    public UserWishlist Userlist { get; set; }
 }

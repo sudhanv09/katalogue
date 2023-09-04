@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IBookServer, BookServer>();
+builder.Services.AddScoped<IOpenLibSearch, OpenLibSearch>();
 
 builder.Services.AddSwaggerGen(options =>
 {
