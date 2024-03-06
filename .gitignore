@@ -1,7 +1,7 @@
-API/bin/Debug/net6.0
+API/bin
 API/obj
-Client/node_modules
 API.Test/obj/
+API.Test/bin
 .idea/.idea.katalogue.dir/.idea
-API.Test/bin/Debug/net6.0
-API/bin/Release/net6.0
+
+Client/node_modules
