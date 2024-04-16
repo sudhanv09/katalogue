@@ -5,10 +5,10 @@ using Xunit;
 
 namespace API.Test.ServicesTest;
 
-public class LibraryServiceTest
+public class LibraryManagerServiceTest
 {
     private readonly ILibraryService _library;
-    public LibraryServiceTest()
+    public LibraryManagerServiceTest()
     {
        
     }

@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUploadService, UploadService>();
-builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<ILibraryService, LibraryManagerService>();
 builder.Services.AddScoped<IBookServer, BookServer>();
 builder.Services.AddScoped<IOpenLibSearch, OpenLibSearch>();
 

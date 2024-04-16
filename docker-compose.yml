@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  api:
+    container_name: 'katalogue-api'
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    ports:
+     - "5132:5132"
+    depends_on:
+     - "postgres"
+    networks:
+      - katalogue-network
+  postgres:
+    container_name: 'katalogue-db'
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kataloguedb
+    networks:
+      - katalogue-network
+    # volumes:
+      # - postgres-data:/var/lib/postgresql/data
+networks:
+  katalogue-network:
+    driver: bridge
+

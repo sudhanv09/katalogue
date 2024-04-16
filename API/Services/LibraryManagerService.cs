@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
-public class LibraryService : ILibraryService
+public class LibraryManagerService : ILibraryService
 {
     private AppDbContext _ctx { get; set; }
 
-    public LibraryService(AppDbContext ctx)
+    public LibraryManagerService(AppDbContext ctx)
     {
         _ctx = ctx;
     }

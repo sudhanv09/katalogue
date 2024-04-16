@@ -9,8 +9,8 @@ namespace API.Services;
 
 public class UploadService : IUploadService
 {
-    private const string libPath = "/home/zeus/Katalogue/";
-    public AppDbContext _ctx { get; set; }
+    const string libPath = "/home/zeus/Katalogue/";
+    private AppDbContext _ctx { get; set; }
     
     public UploadService(AppDbContext ctx)
     {
@@ -25,21 +25,24 @@ public class UploadService : IUploadService
                 return new Response { Success = false, ErrorCode = "3", Error = "File already exists" };
          
             var bookData = GetEpubMetadata(file);
-        
-            // write to db
-            _ctx.Books.Add(bookData);
-            await _ctx.SaveChangesAsync();
-        
+            
+            
             // write to dir
             if (!Directory.Exists(libPath))
                 Directory.CreateDirectory(libPath);
+
+            var bookPath = Path.Combine(libPath, bookData.Id.ToString());
+            var writeDir = Directory.CreateDirectory(bookPath).ToString();
             
-            var writeLocation = Directory.CreateDirectory(Path.Combine(libPath, bookData.Id.ToString())).ToString();
-            var fullPath = Path.Combine(writeLocation, file.FileName);
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            var fullPath = Path.Combine(writeDir, file.FileName);
+            await using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+            
+            // write to db
+            _ctx.Books.Add(bookData);
+            await _ctx.SaveChangesAsync();
         }
         return new Response {Success = true, SuccessMessage = "Uploaded all files successfully"};
     }
@@ -51,7 +54,7 @@ public class UploadService : IUploadService
         return exists;
     }
 
-    public Book GetEpubMetadata(IFormFile file)
+    private static Book GetEpubMetadata(IFormFile file)
     {
         var generateGuid = Guid.NewGuid();
         var epubData = EpubReader.ReadBook(file.OpenReadStream());

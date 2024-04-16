@@ -34,7 +34,7 @@ public class LibraryController : Controller
     public async Task<IActionResult> GetTitleById(string id)
     {
         var response = await _lib.GetBookById(id);
-        if (response == null)
+        if (response is null)
             return BadRequest("Invalid Id");
         return Ok(response);
     }

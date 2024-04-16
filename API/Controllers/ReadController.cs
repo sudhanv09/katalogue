@@ -41,6 +41,12 @@ public class ReadController : Controller
         return Ok(toc);
     }
 
+    [HttpGet("image")]
+    public async Task<IActionResult> GetImage([FromQuery]string img)
+    {
+        return Ok(img);
+    }
+
     /// <summary>
     /// Get css for the book
     /// </summary>
@@ -51,7 +57,6 @@ public class ReadController : Controller
     {
         var css = await _book.GetBookCss(id);
         return Content(css, "text/css", Encoding.UTF8);
-        // return Ok(css);
     }
     
     /// <summary>

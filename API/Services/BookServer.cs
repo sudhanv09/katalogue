@@ -10,7 +10,7 @@ namespace API.Services;
 
 public class BookServer : IBookServer
 {
-    public AppDbContext _ctx { get; }
+    private AppDbContext _ctx { get; }
     private const string libPath = "/home/zeus/Katalogue/";
 
     public BookServer(AppDbContext ctx)
@@ -19,7 +19,7 @@ public class BookServer : IBookServer
     }
 
     // TODO: Unit Test
-    public string GetBookFromStorage(string id)
+    private static string GetBookFromStorage(string id)
     {
         // Each directory only has 1 file
         var path = Path.Combine(libPath, id);
@@ -31,9 +31,11 @@ public class BookServer : IBookServer
         var bookPath = GetBookFromStorage(id);
         var book = await EpubReader.ReadBookAsync(bookPath);
         
-        HtmlDocument document = new HtmlDocument();
-        StringBuilder sb = new StringBuilder();
+        var document = new HtmlDocument();
+        var sb = new StringBuilder();
         document.LoadHtml(book.ReadingOrder[chapter].Content);
+        
+        InterceptImgTags(document);
         
         var nodes = document.DocumentNode.SelectNodes("//body");
 
@@ -44,11 +46,33 @@ public class BookServer : IBookServer
         return sb.ToString();
     }
 
+    private static void InterceptImgTags(HtmlDocument document)
+    {
+        var imgNode = document.DocumentNode.SelectNodes("//body//img");
+        if (imgNode is null)
+            return;
+
+        foreach (var img in imgNode)
+        {
+            var currSrc = img.GetAttributeValue("src", "");
+            
+            if (currSrc.Contains('/'))
+            {
+                var imgName = currSrc.Split('/')[1];
+                img.SetAttributeValue("src", $"http://localhost:5050/read/image?img={imgName}");
+            }
+            else
+            {
+                img.SetAttributeValue("src", $"http://localhost:5050/read/image?img={currSrc}");
+            }
+        }
+    }
+
     public async Task<string> GetBookCss(string id)
     {
         var bookPath = GetBookFromStorage(id);
         var book = await EpubReader.ReadBookAsync(bookPath);
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         var bookCss = book.Content.Css.Local;
         foreach (var css in bookCss)
@@ -87,8 +111,7 @@ public class BookServer : IBookServer
         var bookProgress = await GetProgress(id);
         if (bookProgress == 0)
         {
-            MarkStatus(id, ReadingStatus.Reading);
-            
+            await MarkStatus(id, ReadingStatus.Reading);
         }
         var content = await GetEbookChapterBody(id, bookProgress);
         return content;
@@ -102,13 +125,16 @@ public class BookServer : IBookServer
         return await GetEbookChapterBody(id, trackProgress);
     }
 
-    public async Task<int> GetProgress(string id)
+    private async Task<int> GetProgress(string id)
     {
         var isValidGuid = Guid.TryParse(id, out Guid newId);
         if (!isValidGuid)
             return 0; // TODO change the return to something better.
         
-        var bookProgress = await _ctx.Books.Where(i => i.Id == newId).Select(p => p.Progress).FirstOrDefaultAsync();
+        var bookProgress = await _ctx.Books
+            .Where(i => i.Id == newId)
+            .Select(p => p.Progress)
+            .FirstOrDefaultAsync();
         return bookProgress;
     }
 

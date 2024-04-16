@@ -8,7 +8,7 @@ namespace API.Services;
 
 public class OpenLibSearch : IOpenLibSearch
 {
-    private readonly string OLUrl = "https://openlibrary.org/search.json";
+    const string OLUrl = "https://openlibrary.org/search.json";
     
     public async Task<OLSearch> SearchBook(string query)
     {
@@ -22,7 +22,7 @@ public class OpenLibSearch : IOpenLibSearch
             return result;
         };
     }
-    public string UrlBuilder(string query)
+    private static string UrlBuilder(string query)
     {
         var uriBuilder = new UriBuilder(OLUrl);
         var queryString = HttpUtility.ParseQueryString(uriBuilder.Query);
