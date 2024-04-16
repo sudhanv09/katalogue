@@ -26,7 +26,6 @@ public class UploadService : IUploadService
          
             var bookData = GetEpubMetadata(file);
             
-            
             // write to dir
             if (!Directory.Exists(libPath))
                 Directory.CreateDirectory(libPath);
@@ -40,6 +39,8 @@ public class UploadService : IUploadService
                 await file.CopyToAsync(stream);
             }
             
+            CopyImagesToDisk(file, bookPath);
+            
             // write to db
             _ctx.Books.Add(bookData);
             await _ctx.SaveChangesAsync();
@@ -47,7 +48,7 @@ public class UploadService : IUploadService
         return new Response {Success = true, SuccessMessage = "Uploaded all files successfully"};
     }
     
-    public bool FileExists(IFormFile file)
+    private bool FileExists(IFormFile file)
     {
         var bookName = GetEpubMetadata(file);
         var exists = _ctx.Books.Any(t=>t.Title == bookName.Title);
@@ -64,9 +65,22 @@ public class UploadService : IUploadService
             Title = epubData.Title,
             Author = epubData.Author,
             Description = epubData.Description,
-            Cover = epubData.CoverImage,
             Status = ReadingStatus.ToRead
         };
         return bookData;
+    }
+
+    private static void CopyImagesToDisk(IFormFile file, string path)
+    {
+        var book = EpubReader.ReadBook(file.OpenReadStream());
+        var imgList = book.Content.Images.Local;
+
+        // Image path can be folder/image.jpg or image.jpg
+        foreach (var img in imgList)
+        {
+            var tmp = img.Key.Contains('/') ? img.Key.Split('/')[1] : img.Key;
+            var writePath = Path.Combine(path, tmp);
+            File.WriteAllBytes(writePath, img.Content);
+        }
     }
 }

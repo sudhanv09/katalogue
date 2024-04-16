@@ -35,7 +35,7 @@ public class BookServer : IBookServer
         var sb = new StringBuilder();
         document.LoadHtml(book.ReadingOrder[chapter].Content);
         
-        InterceptImgTags(document);
+        InterceptImgTags(id, document);
         
         var nodes = document.DocumentNode.SelectNodes("//body");
 
@@ -46,7 +46,7 @@ public class BookServer : IBookServer
         return sb.ToString();
     }
 
-    private static void InterceptImgTags(HtmlDocument document)
+    private static void InterceptImgTags(string id, HtmlDocument document)
     {
         var imgNode = document.DocumentNode.SelectNodes("//body//img");
         if (imgNode is null)
@@ -59,7 +59,7 @@ public class BookServer : IBookServer
             if (currSrc.Contains('/'))
             {
                 var imgName = currSrc.Split('/')[1];
-                img.SetAttributeValue("src", $"http://localhost:5050/read/image?img={imgName}");
+                img.SetAttributeValue("src", $"http://localhost:5050/read/image/{id}?img={imgName}");
             }
             else
             {
@@ -104,6 +104,21 @@ public class BookServer : IBookServer
             }
         }
         return titles;
+    }
+
+    public async Task<byte[]> GetImageByName(string imgName, string id)
+    {
+        var path = Path.Combine(libPath, id);
+        var files =  Directory.GetFiles(path, imgName, SearchOption.AllDirectories)
+            .Where(s => s.EndsWith(".jpg") || s.EndsWith("jpeg") || s.EndsWith("png"));
+
+        if (!files.Any())
+        {
+            return null;
+        }
+
+        var imgToByte = await File.ReadAllBytesAsync(files.First());
+        return imgToByte;
     }
 
     public async Task<string> StartBook(string id)

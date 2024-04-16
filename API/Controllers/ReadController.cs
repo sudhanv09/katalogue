@@ -42,9 +42,14 @@ public class ReadController : Controller
     }
 
     [HttpGet("image")]
-    public async Task<IActionResult> GetImage([FromQuery]string img)
+    public async Task<IActionResult> GetImage(string img, string id)
     {
-        return Ok(img);
+        var image = await _book.GetImageByName(img, id);
+        if (image is null)
+        {
+            return BadRequest("Not Found");
+        }
+        return Ok(image);
     }
 
     /// <summary>
