@@ -1,22 +1,15 @@
 <script lang="ts">
 	import '$src/app.postcss';
-	import { AppShell, AppBar, Toast, Modal } from '@skeletonlabs/skeleton';
 	import SideBar from '$lib/components/SideBar.svelte';
 
-	import { initializeStores } from '@skeletonlabs/skeleton';
-	initializeStores();
+	import { Toaster } from '$src/lib/shad/ui/sonner';
 </script>
 
-<Toast />
-<Modal />
+<Toaster />
 
-<AppShell>
-	<svelte:fragment slot="header">
-		<AppBar class="text-3xl ps-6">
-			<a href="/">Katalogue</a>
-		</AppBar>
-	</svelte:fragment>
-	<svelte:fragment slot="sidebarLeft"><SideBar /></svelte:fragment>
+<div>
+	<a href="/">Katalogue</a>
+	<SideBar />
 
 	<slot />
-</AppShell>
+</div>

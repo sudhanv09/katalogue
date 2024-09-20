@@ -1,8 +1,7 @@
 <script lang="ts">
 	import BookCard from '$lib/components/BookCard.svelte';
-import type { PageData } from './$types';
+	import type { PageData } from './$types';
 	export let data: PageData;
-
 </script>
 
 <div>
@@ -16,4 +15,3 @@ import type { PageData } from './$types';
 		{/each}
 	</ul>
 </div>
-

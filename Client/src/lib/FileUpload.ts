@@ -1,4 +1,4 @@
-import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+import {toast} from "svelte-sonner"
 
 export async function handleFileUpload(e: Event) {
 	const files = (e.target as HTMLInputElement).files;
@@ -18,20 +18,11 @@ export async function handleFileUpload(e: Event) {
 	});
 	const response = await req.json();
 
-	const toastStore = getToastStore();
 	if (response.success) {
-		const t: ToastSettings = {
-			message: response.successMessage,
-			background: 'variant-filled-success'
-		};
-		toastStore.trigger(t);
+		toast("File Upload success")
 	} else {
 		if (response.errorCode == 3) {
-			const t: ToastSettings = {
-				message: response.error,
-				background: 'variant-filled-error'
-			};
-			toastStore.trigger(t);
+			toast("Upload failed. Try again!");
 		}
 	}
 }
