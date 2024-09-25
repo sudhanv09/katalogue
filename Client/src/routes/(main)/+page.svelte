@@ -1,8 +1,9 @@
 <script lang="ts">
   import BookCard from "$src/lib/components/BookCard.svelte";
+  import FileUpload from "$src/lib/components/FileUpload.svelte";
   import * as ToggleGroup from "$lib/shad/ui/toggle-group";
   import Button from "$src/lib/shad/ui/button/button.svelte";
-  import { Plus, Pencil } from "lucide-svelte";
+  import { Pencil } from "lucide-svelte";
   import type { PageData } from "./$types";
 
   export let data: PageData;
@@ -22,9 +23,7 @@
       </ToggleGroup.Item>
     </ToggleGroup.Root>
     <div class="space-x-4">
-      <Button>
-        <Plus class="w-4 h-4 mx-2" />Add
-      </Button>
+      <FileUpload />
       <Button>
         <Pencil class="w-4 h-4 mx-2" />Edit
       </Button>
@@ -35,6 +34,6 @@
     {#each data.books as book}
       <BookCard {book}/>
     {/each}
-
   </div>
+
 </div>
