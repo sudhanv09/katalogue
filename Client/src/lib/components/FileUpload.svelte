@@ -16,14 +16,22 @@
       <Dialog.Title>Upload files</Dialog.Title>
       <Dialog.Description>Add your ebooks.</Dialog.Description>
     </Dialog.Header>
+    <form on:submit={handleFileUpload}>
     <div class="grid gap-4 py-4">
       <div class="grid grid-cols-4 items-center gap-4">
-        <Label for="name" class="text-right">File</Label>
-        <Input id="name" type="file" accept=".epub" class="col-span-3 text-neutral-400" />
+        <Label for="bookUpload" class="text-right">File</Label>
+        <Input
+          id="bookUpload"
+          type="file"
+          accept=".epub"
+          class="col-span-3 text-neutral-400"
+          on:change={handleFileUpload}
+        />
       </div>
     </div>
     <Dialog.Footer>
-      <Button type="submit" on:click={handleFileUpload}>Upload</Button>
+      <Button type="submit">Upload</Button>
     </Dialog.Footer>
+  </form>
   </Dialog.Content>
 </Dialog.Root>

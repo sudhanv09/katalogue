@@ -14,7 +14,7 @@
     <Card.Footer>
       <div class="text-left">
         <Progress class="h-1"/>
-        <p>{book.title}</p>
+        <a href={`/${book.id}`}><p>{book.title}</p></a>
         <p class="text-sm text-neutral-500">{book.author}</p>
       </div>
     </Card.Footer>

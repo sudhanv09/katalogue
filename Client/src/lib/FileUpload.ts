@@ -1,8 +1,10 @@
 import {toast} from "svelte-sonner"
 
 export async function handleFileUpload(e: Event) {
+	e.preventDefault();
+
 	const files = (e.target as HTMLInputElement).files;
-	if (!files) return;
+	if (!files || files.length === 0) return;
 
 	let formData = new FormData();
 	Array.from(files).forEach((f) => {
@@ -19,10 +21,10 @@ export async function handleFileUpload(e: Event) {
 	const response = await req.json();
 
 	if (response.success) {
-		toast("File Upload success")
+		toast.success("File Upload success");
 	} else {
 		if (response.errorCode == 3) {
-			toast("Upload failed. Try again!");
+			toast.error("Upload failed. Try again!");
 		}
 	}
 }
