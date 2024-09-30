@@ -6,6 +6,7 @@ export interface Book {
     description: string;
     cover: string;
     status: BookStatus;
+    progress: number;
 };
 
 export enum BookStatus {

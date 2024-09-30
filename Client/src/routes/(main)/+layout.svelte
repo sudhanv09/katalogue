@@ -43,7 +43,9 @@
         Katalogue
       </h2>
     </div>
-    <FileUpload />
+    <div class="">
+      <FileUpload />
+    </div>
     <div>
       <SideBar items={sidebarNavItems} />
       <Separator />
