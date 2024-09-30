@@ -4,14 +4,14 @@ namespace API.Services.Interfaces;
 
 public interface ILibraryService
 {
-    Task<List<Book>> GetAllBooks();
-    Task<Book> GetBookById(string id);
-    Task<List<Book>> GetBooksByAuthor(string author);
-    Task<Book> GetBookByTitle(string name);
+    Task<List<BookResponse>> GetAllBooks();
+    Task<BookResponse> GetBookById(string id);
+    Task<List<BookResponse>> GetBooksByAuthor(string author);
+    Task<BookResponse> GetBookByTitle(string name);
     Task<HashSet<string>> GetAllAuthors();
-    Task<List<Book>> GetReading();
-    Task<List<Book>> GetUserReadList();
-    Task<List<Book>> GetFinishedList();
+    Task<List<BookResponse>> GetReading();
+    Task<List<BookResponse>> GetUserReadList();
+    Task<List<BookResponse>> GetFinishedList();
 
     
 }

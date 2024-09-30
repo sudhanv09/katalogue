@@ -7,57 +7,80 @@ namespace API.Services;
 
 public class LibraryManagerService : ILibraryService
 {
-    private AppDbContext _ctx { get; set; }
+    private AppDbContext Ctx { get; set; }
+    private readonly string _libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "Katalogue/";
 
     public LibraryManagerService(AppDbContext ctx)
     {
-        _ctx = ctx;
+        Ctx = ctx;
     }
-    public async Task<List<Book>> GetAllBooks()
+    public async Task<List<BookResponse>> GetAllBooks()
     {
-        return await _ctx.Books.ToListAsync();
+        var books = await Ctx.Books.ToListAsync();
+        return books.Select(ResolveResponse).ToList();
     }
 
-    public async Task<Book> GetBookById(string id)
+    public async Task<BookResponse> GetBookById(string id)
     {
-        var isValidGuid = Guid.TryParse(id, out Guid newId);
+        var isValidGuid = Guid.TryParse(id, out var newId);
         if (!isValidGuid)
             return null;
-        return await _ctx.Books.FirstOrDefaultAsync(i => i.Id == newId);
+        
+        var book = await Ctx.Books.FirstOrDefaultAsync(i => i.Id == newId);
+        return ResolveResponse(book);
     }
 
-    public async Task<List<Book>> GetBooksByAuthor(string author)
+    public async Task<List<BookResponse>> GetBooksByAuthor(string author)
     {
-        return await _ctx.Books.Where(a => a.Author == author).ToListAsync();
+        var authors = await Ctx.Books.Where(a => a.Author == author).ToListAsync();
+        return authors.Select(ResolveResponse).ToList();
     }
 
-    public async Task<Book> GetBookByTitle(string name)
+    public async Task<BookResponse> GetBookByTitle(string name)
     {
-        return await _ctx.Books.FirstOrDefaultAsync(a => a.Title == name);
+        var title = await Ctx.Books.FirstOrDefaultAsync(a => a.Title == name);
+        return ResolveResponse(title);
     }
 
     public async Task<HashSet<string>> GetAllAuthors()
     {
-        var authorlist = await _ctx.Books.Select(a => a.Author).ToListAsync();
+        var authorlist = await Ctx.Books.Select(a => a.Author).ToListAsync();
         var unique = new HashSet<string>(authorlist);
 
         return unique;
     }
 
-    public async Task<List<Book>> GetReading()
+    public async Task<List<BookResponse>> GetReading()
     {
-        return await _ctx.Books.Where(b => b.Status == ReadingStatus.Reading).ToListAsync();
+        var reading = await Ctx.Books.Where(b => b.Status == ReadingStatus.Reading).ToListAsync();
+        return reading.Select(ResolveResponse).ToList();
     }
 
-    public async Task<List<Book>> GetUserReadList()
+    public async Task<List<BookResponse>> GetUserReadList()
     {
-        return await _ctx.Books.Where(b => b.Status == ReadingStatus.ToRead).ToListAsync();
+        var readlist = await Ctx.Books.Where(b => b.Status == ReadingStatus.ToRead).ToListAsync();
+        return readlist.Select(ResolveResponse).ToList();
     }
 
-    public async Task<List<Book>> GetFinishedList()
+    public async Task<List<BookResponse>> GetFinishedList()
     {
-        return await _ctx.Books.Where(b => b.Status == ReadingStatus.Finished).ToListAsync();
+        var finished = await Ctx.Books.Where(b => b.Status == ReadingStatus.Finished).ToListAsync();
+        return finished.Select(ResolveResponse).ToList();
     }
 
-    
+    private BookResponse ResolveResponse(Book book)
+    {
+        var cover = File.ReadAllBytes(_libPath + book.CoverPath);
+        
+        return new BookResponse
+        {
+            Id = book.Id,
+            Author = book.Author,
+            Cover = cover,
+            Description = book.Description,
+            Progress = book.Progress,
+            Status = book.Status
+        };
+
+    }
 }
