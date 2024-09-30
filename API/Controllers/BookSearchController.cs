@@ -7,17 +7,17 @@ namespace API.Controllers;
 [Route("/search")]
 public class BookSearchController : Controller
 {
-    public IOpenLibSearch _search { get; set; }
+    private IOpenLibSearch _search { get; set; }
     public BookSearchController(IOpenLibSearch search)
     {
         _search = search;
     }
     
     [HttpGet]
-    public async Task<IActionResult> BookSearch(string query)
+    public async Task<IResult> BookSearch(string query)
     {
         var result = await _search.SearchBook(query);
-        return Ok(result);
+        return Results.Ok(result);
     }
     
 }

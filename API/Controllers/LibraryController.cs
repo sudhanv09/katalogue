@@ -20,9 +20,9 @@ public class LibraryController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllBooks()
+    public async Task<IResult> GetAllBooks()
     {
-        return Ok(await _lib.GetAllBooks());
+        return Results.Ok(await _lib.GetAllBooks());
     }
     
     /// <summary>
@@ -31,12 +31,12 @@ public class LibraryController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetTitleById(string id)
+    public async Task<IResult> GetTitleById(string id)
     {
         var response = await _lib.GetBookById(id);
         if (response is null)
-            return BadRequest("Invalid Id");
-        return Ok(response);
+            return Results.BadRequest("Invalid Id");
+        return Results.Ok(response);
     }
 
     /// <summary>
@@ -45,13 +45,13 @@ public class LibraryController : Controller
     /// <param name="name"></param>
     /// <returns></returns>
     [HttpGet("title")]
-    public async Task<IActionResult> GetTitle(string name)
+    public async Task<IResult> GetTitle(string name)
     {
         var result = await _lib.GetBookByTitle(name);
         if (result is null)
-            return NotFound("Incorrect Name");
+            return Results.NotFound("Incorrect Name");
         
-        return Ok(result);
+        return Results.Ok(result);
     }
 
     /// <summary>
@@ -60,12 +60,12 @@ public class LibraryController : Controller
     /// <param name="author"></param>
     /// <returns></returns>
     [HttpGet("author")]
-    public async Task<IActionResult> GetAuthor(string author)
+    public async Task<IResult> GetAuthor(string author)
     {
         var result = await _lib.GetBooksByAuthor(author);
         if (result.Count == 0)
-            return NotFound("Author Not found");
-        return Ok(result);
+            return Results.NotFound("Author Not found");
+        return Results.Ok(result);
     }
     
     /// <summary>
@@ -73,12 +73,12 @@ public class LibraryController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("authorlist")]
-    public async Task<IActionResult> GetAuthorList()
+    public async Task<IResult> GetAuthorList()
     {
         var result = await _lib.GetAllAuthors();
         if (result.Count == 0)
-            return NotFound("Empty List");
-        return Ok(result);
+            return Results.NotFound("Empty List");
+        return Results.Ok(result);
     }
     
     /// <summary>
@@ -87,7 +87,7 @@ public class LibraryController : Controller
     /// <returns></returns>
 
     [HttpGet("to-read")]
-    public async Task<List<Book>> GetReadList()
+    public async Task<List<BookResponse>> GetReadList()
     {
         return await _lib.GetUserReadList();
     }
@@ -97,7 +97,7 @@ public class LibraryController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("finished")]
-    public async Task<List<Book>> GetRead()
+    public async Task<List<BookResponse>> GetRead()
     {
         return await _lib.GetFinishedList();
     }
@@ -108,7 +108,7 @@ public class LibraryController : Controller
     /// <returns></returns>
     
     [HttpGet("reading")]
-    public async Task<List<Book>> GetReading()
+    public async Task<List<BookResponse>> GetReading()
     {
         return await _lib.GetReading();
     }

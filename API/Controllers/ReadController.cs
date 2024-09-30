@@ -9,7 +9,7 @@ namespace API.Controllers;
 [Route("/read")]
 public class ReadController : Controller
 {
-    public IBookServer _book { get; set; }
+    private IBookServer _book { get; set; }
     public ReadController(IBookServer book)
     {
         _book = book;
@@ -22,11 +22,11 @@ public class ReadController : Controller
     /// <param name="chapter"></param>
     /// <returns></returns>
     [HttpGet("{chapter}")]
-    public async Task<IActionResult> GetChapter(string id, int chapter)
+    public async Task<IResult> GetChapter(string id, int chapter)
     {
         var bookText = await _book.GetEbookChapterBody(id, chapter);
         var toBytes = Encoding.UTF8.GetBytes(bookText);
-        return Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
+        return Results.Content(Encoding.UTF8.GetString(toBytes), "text/html", Encoding.UTF8);
     }
     
     /// <summary>
@@ -35,21 +35,21 @@ public class ReadController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("toc")]
-    public IActionResult GetToc(string id)
+    public IResult GetToc(string id)
     {
         var toc = _book.GetToc(id);
-        return Ok(toc);
+        return Results.Ok(toc);
     }
 
     [HttpGet("image")]
-    public async Task<IActionResult> GetImage(string img, string id)
+    public async Task<IResult> GetImage(string img, string id)
     {
         var image = await _book.GetImageByName(img, id);
         if (image is null)
         {
-            return BadRequest("Not Found");
+            return Results.BadRequest("Not Found");
         }
-        return Ok(image);
+        return Results.Ok(image);
     }
 
     /// <summary>
@@ -58,10 +58,10 @@ public class ReadController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("book-css")]
-    public async Task<IActionResult> GetCss(string id)
+    public async Task<IResult> GetCss(string id)
     {
         var css = await _book.GetBookCss(id);
-        return Content(css, "text/css", Encoding.UTF8);
+        return Results.Content(css, "text/css", Encoding.UTF8);
     }
     
     /// <summary>
@@ -70,10 +70,10 @@ public class ReadController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("start")]
-    public async Task<IActionResult> StartBook(string id)
+    public async Task<IResult> StartBook(string id)
     {
         var start = await _book.StartBook(id);
-        return Ok(start);
+        return Results.Ok(start);
     }
     
     /// <summary>
@@ -82,10 +82,10 @@ public class ReadController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("next")]
-    public async Task<IActionResult> NextChapter(string id)
+    public async Task<IResult> NextChapter(string id)
     {
         var next = await _book.NextChapter(id);
-        return Ok(next);
+        return Results.Ok(next);
     }
     
 }
