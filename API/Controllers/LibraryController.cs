@@ -72,7 +72,7 @@ public class LibraryController : Controller
     /// Get author list
     /// </summary>
     /// <returns></returns>
-    [HttpGet("authorlist")]
+    [HttpGet("author/list")]
     public async Task<IResult> GetAuthorList()
     {
         var result = await _lib.GetAllAuthors();
@@ -111,5 +111,14 @@ public class LibraryController : Controller
     public async Task<List<BookResponse>> GetReading()
     {
         return await _lib.GetReading();
+    }
+    
+    [HttpDelete("remove")]
+    public async Task<IResult> RemoveBook(string id, bool includeFile)
+    {
+        var result = await _lib.RemoveBook(id, includeFile);
+        if (result.IsFailed) return Results.Problem();
+
+        return Results.Ok("Item deleted");
     }
 }

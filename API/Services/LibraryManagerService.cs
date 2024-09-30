@@ -1,6 +1,7 @@
 using API.Data;
 using API.Models;
 using API.Services.Interfaces;
+using FluentResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
@@ -8,7 +9,7 @@ namespace API.Services;
 public class LibraryManagerService : ILibraryService
 {
     private AppDbContext Ctx { get; set; }
-    private readonly string _libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "Katalogue/";
+    private readonly string _libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Katalogue/";
 
     public LibraryManagerService(AppDbContext ctx)
     {
@@ -68,6 +69,23 @@ public class LibraryManagerService : ILibraryService
         return finished.Select(ResolveResponse).ToList();
     }
 
+    public async Task<Result> RemoveBook(string id, bool includeFiles)
+    {
+        var validId = Guid.TryParse(id, out var newId);
+        if (!validId) return Result.Fail("Invalid id");
+
+        var book = await Ctx.Books.FindAsync(newId);
+        if (book == null) return Result.Fail("Book not found");
+        
+        // Remove from path
+        if (includeFiles)
+            Directory.Delete(_libPath + book.Id, true);
+        
+        Ctx.Books.Remove(book);
+        await Ctx.SaveChangesAsync();
+        return Result.Ok();
+    }
+
     private BookResponse ResolveResponse(Book book)
     {
         var cover = File.ReadAllBytes(_libPath + book.CoverPath);
@@ -75,6 +93,7 @@ public class LibraryManagerService : ILibraryService
         return new BookResponse
         {
             Id = book.Id,
+            Title = book.Title,
             Author = book.Author,
             Cover = cover,
             Description = book.Description,

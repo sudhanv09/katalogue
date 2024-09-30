@@ -1,4 +1,5 @@
 using API.Models;
+using FluentResults;
 
 namespace API.Services.Interfaces;
 
@@ -12,6 +13,6 @@ public interface ILibraryService
     Task<List<BookResponse>> GetReading();
     Task<List<BookResponse>> GetUserReadList();
     Task<List<BookResponse>> GetFinishedList();
+    Task<Result> RemoveBook(string id, bool includeFile);
 
-    
 }

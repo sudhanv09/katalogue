@@ -8,7 +8,7 @@ namespace API.Services;
 
 public class UploadService : IUploadService
 {
-    private static string libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "Katalogue/";
+    private static string libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Katalogue/";
     private AppDbContext _ctx { get; set; }
     
     public UploadService(AppDbContext ctx)
@@ -56,7 +56,7 @@ public class UploadService : IUploadService
         var generateGuid = Guid.NewGuid();
         var epubData = EpubReader.ReadBook(file.OpenReadStream());
         var coverName = epubData.Content.Cover?.FilePath.Split('/').Last();
-        var coverPath = generateGuid + coverName;
+        var coverPath = $"{generateGuid}/{coverName}";
         
         var bookData = new Book {
             Id = generateGuid,
