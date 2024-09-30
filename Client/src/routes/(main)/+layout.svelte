@@ -2,6 +2,7 @@
   import "$src/app.postcss";
   import SideBar from "$src/lib/components/SideBar.svelte";
   import Separator from "$lib/shad/ui/separator/separator.svelte";
+  import FileUpload from "$src/lib/components/FileUpload.svelte";
 
   import { Toaster } from "$src/lib/shad/ui/sonner";
 
@@ -11,13 +12,21 @@
       href: "/",
     },
     {
+      title: "To-Read",
+      href: "/to-read",
+    },
+    {
+      title: "Finished",
+      href: "/finished",
+    },
+    {
       title: "Authors",
       href: "/authors",
     },
     {
       title: "Wishlist",
       href: "/reading",
-    },
+    }
   ];
 </script>
 
@@ -34,6 +43,7 @@
         Katalogue
       </h2>
     </div>
+    <FileUpload />
     <div>
       <SideBar items={sidebarNavItems} />
       <Separator />
