@@ -1,15 +1,14 @@
-using System.Drawing;
 using API.Data;
 using API.Models;
-using API.Models.Dto;
 using API.Services.Interfaces;
+using FluentResults;
 using VersOne.Epub;
 
 namespace API.Services;
 
 public class UploadService : IUploadService
 {
-    const string libPath = "/home/zeus/Katalogue/";
+    private static string libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "Katalogue/";
     private AppDbContext _ctx { get; set; }
     
     public UploadService(AppDbContext ctx)
@@ -17,23 +16,20 @@ public class UploadService : IUploadService
         _ctx = ctx;
     }
     
-    public async Task<Response> HandleUpload(FileDto files)
+    public async Task<Result> HandleUpload(IFormFile file)
     {
-        foreach (var file in files.file)
-        {
             if (FileExists(file))
-                return new Response { Success = false, ErrorCode = "3", Error = "File already exists" };
+                return Result.Fail("File already exists");
          
             var bookData = GetEpubMetadata(file);
             
             // write to dir
             if (!Directory.Exists(libPath))
                 Directory.CreateDirectory(libPath);
-
             var bookPath = Path.Combine(libPath, bookData.Id.ToString());
             var writeDir = Directory.CreateDirectory(bookPath).ToString();
-            
             var fullPath = Path.Combine(writeDir, file.FileName);
+            
             await using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
@@ -44,8 +40,8 @@ public class UploadService : IUploadService
             // write to db
             _ctx.Books.Add(bookData);
             await _ctx.SaveChangesAsync();
-        }
-        return new Response {Success = true, SuccessMessage = "Uploaded all files successfully"};
+        
+        return Result.Ok();
     }
     
     private bool FileExists(IFormFile file)
@@ -59,12 +55,15 @@ public class UploadService : IUploadService
     {
         var generateGuid = Guid.NewGuid();
         var epubData = EpubReader.ReadBook(file.OpenReadStream());
+        var coverName = epubData.Content.Cover?.FilePath.Split('/').Last();
+        var coverPath = generateGuid + coverName;
         
         var bookData = new Book {
             Id = generateGuid,
             Title = epubData.Title,
             Author = epubData.Author,
             Description = epubData.Description,
+            CoverPath = coverPath,
             Status = ReadingStatus.ToRead
         };
         return bookData;

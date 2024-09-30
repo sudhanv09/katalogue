@@ -1,10 +1,11 @@
 using API.Models;
 using API.Models.Dto;
+using FluentResults;
 using VersOne.Epub;
 
 namespace API.Services.Interfaces;
 
 public interface IUploadService
 {
-    Task<Response> HandleUpload(FileDto files);
+    Task<Result> HandleUpload(IFormFile files);
 }
