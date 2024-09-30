@@ -5,12 +5,13 @@
   export let data: PageData;
 </script>
 
-
 {#if data.books.length === 0}
-<p class="flex items-center justify-center text-neutral-400 h-dvh">Books currently being read will be displayed here. Add books to start reading!</p>
+  <p class="flex items-center justify-center text-neutral-400 h-dvh">
+    Books currently being read will be displayed here. Add books to start
+    reading!
+  </p>
 {/if}
 <div class="grid sm:grid-cols-1 lg:grid-cols-4">
-
   {#each data.books as book}
     <BookCard {book} />
   {/each}
