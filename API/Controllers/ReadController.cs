@@ -73,7 +73,7 @@ public class ReadController : Controller
     public async Task<IResult> StartBook(string id)
     {
         var start = await _book.StartBook(id);
-        return Results.Ok(start);
+        return Results.Content(start, "text/html", Encoding.UTF8);
     }
     
     /// <summary>
@@ -85,7 +85,7 @@ public class ReadController : Controller
     public async Task<IResult> NextChapter(string id)
     {
         var next = await _book.NextChapter(id);
-        return Results.Ok(next);
+        return Results.Content(next, "text/html", Encoding.UTF8);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public class ReadController : Controller
     public async Task<IResult> PrevChapter(string id)
     {
         var prev = await _book.PrevChapter(id);
-        return Results.Ok(prev);
+        return Results.Content(prev, "text/html", Encoding.UTF8);
     }
     
 }

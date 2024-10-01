@@ -6,7 +6,6 @@
   import "$src/app.postcss";
 
   export let data: PageData;
-  console.log(data.content);
   let scrollContent: HTMLDivElement;
   let modalOpen = false;
 
