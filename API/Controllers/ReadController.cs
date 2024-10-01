@@ -87,5 +87,17 @@ public class ReadController : Controller
         var next = await _book.NextChapter(id);
         return Results.Ok(next);
     }
+
+    /// <summary>
+    /// Go to prev chapter in the book
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("prev")]
+    public async Task<IResult> PrevChapter(string id)
+    {
+        var prev = await _book.PrevChapter(id);
+        return Results.Ok(prev);
+    }
     
 }

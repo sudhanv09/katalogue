@@ -11,18 +11,17 @@ namespace API.Services;
 public class BookServer : IBookServer
 {
     private AppDbContext _ctx { get; }
-    private const string libPath = "/home/zeus/Katalogue/";
+    private static readonly string _libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Katalogue/";
 
     public BookServer(AppDbContext ctx)
     {
         _ctx = ctx;
     }
 
-    // TODO: Unit Test
     private static string GetBookFromStorage(string id)
     {
         // Each directory only has 1 file
-        var path = Path.Combine(libPath, id);
+        var path = Path.Combine(_libPath, id);
         return Directory.GetFiles(path, "*.epub")[0];
     }
     
@@ -95,20 +94,15 @@ public class BookServer : IBookServer
             // Navigation returns Headings
             titles.Add(item.Title);
 
-            if (item.NestedItems.Count > 0 )
-            {
-                foreach (var sub in item.NestedItems)
-                {
-                    titles.Add(sub.Title);
-                }    
-            }
+            if (item.NestedItems.Count <= 0) return [];
+            titles.AddRange(item.NestedItems.Select(sub => sub.Title));
         }
         return titles;
     }
 
     public async Task<byte[]> GetImageByName(string imgName, string id)
     {
-        var path = Path.Combine(libPath, id);
+        var path = Path.Combine(_libPath, id);
         var files =  Directory.GetFiles(path, imgName, SearchOption.AllDirectories)
             .Where(s => s.EndsWith(".jpg") || s.EndsWith("jpeg") || s.EndsWith("png"));
 
@@ -139,10 +133,17 @@ public class BookServer : IBookServer
         await UpdateProgress(id, trackProgress);
         return await GetEbookChapterBody(id, trackProgress);
     }
+    
+    public async Task<string> PrevChapter(string id)
+    {
+        var bookProgress = await GetProgress(id);
+        var trackProgress = bookProgress - 1;
+        return await GetEbookChapterBody(id, trackProgress);
+    }
 
     private async Task<int> GetProgress(string id)
     {
-        var isValidGuid = Guid.TryParse(id, out Guid newId);
+        var isValidGuid = Guid.TryParse(id, out var newId);
         if (!isValidGuid)
             return 0; // TODO change the return to something better.
         

@@ -6,16 +6,11 @@ using VersOne.Epub;
 
 namespace API.Services;
 
-public class UploadService : IUploadService
+public class UploadService(AppDbContext ctx) : IUploadService
 {
-    private static string libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Katalogue/";
-    private AppDbContext _ctx { get; set; }
-    
-    public UploadService(AppDbContext ctx)
-    {
-        _ctx = ctx;
-    }
-    
+    private static readonly string _libPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Katalogue/";
+    private AppDbContext Ctx { get; set; } = ctx;
+
     public async Task<Result> HandleUpload(IFormFile file)
     {
             if (FileExists(file))
@@ -24,9 +19,9 @@ public class UploadService : IUploadService
             var bookData = GetEpubMetadata(file);
             
             // write to dir
-            if (!Directory.Exists(libPath))
-                Directory.CreateDirectory(libPath);
-            var bookPath = Path.Combine(libPath, bookData.Id.ToString());
+            if (!Directory.Exists(_libPath))
+                Directory.CreateDirectory(_libPath);
+            var bookPath = Path.Combine(_libPath, bookData.Id.ToString());
             var writeDir = Directory.CreateDirectory(bookPath).ToString();
             var fullPath = Path.Combine(writeDir, file.FileName);
             
@@ -38,8 +33,8 @@ public class UploadService : IUploadService
             CopyImagesToDisk(file, bookPath);
             
             // write to db
-            _ctx.Books.Add(bookData);
-            await _ctx.SaveChangesAsync();
+            Ctx.Books.Add(bookData);
+            await Ctx.SaveChangesAsync();
         
         return Result.Ok();
     }
@@ -47,7 +42,7 @@ public class UploadService : IUploadService
     private bool FileExists(IFormFile file)
     {
         var bookName = GetEpubMetadata(file);
-        var exists = _ctx.Books.Any(t=>t.Title == bookName.Title);
+        var exists = Ctx.Books.Any(t=>t.Title == bookName.Title);
         return exists;
     }
 
