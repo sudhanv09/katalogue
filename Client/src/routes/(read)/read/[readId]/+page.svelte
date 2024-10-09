@@ -14,12 +14,16 @@
 
   async function handleKeyPress(event: KeyboardEvent) {
     switch (event.key) {
-      case "n":
+      case "n": {
         const next = await fetch(`http://localhost:5050/read/next?id=${id}`);
-        return (data.content = await next.text());
-      case "p":
+        data.content = await next.text()
+        return data;
+      }
+      case "p": {
         const prev = await fetch(`http://localhost:5050/read/prev?id=${id}`);
-        return (data.content = await prev.text());
+        data.content = await prev.text()
+        return data;
+      }
       case " ":
         scrollContent.scroll({
           left: scrollContent.scrollLeft + scrollContent.clientWidth + 70,

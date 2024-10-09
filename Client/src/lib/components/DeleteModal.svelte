@@ -3,7 +3,7 @@
     import * as Dialog from "$lib/shad/ui/dialog";
     import { Label } from "$lib/shad/ui/label";
     import { Trash } from "lucide-svelte";
-    import Checkbox from "../shad/ui/checkbox/checkbox.svelte";
+    import { Checkbox } from "$lib/shad/ui/checkbox";
     import { page } from "$app/stores";
     import { toast } from "svelte-sonner";
 
@@ -12,13 +12,15 @@
     const id = url.split("/").pop();
 
     const handleDelete = async () => {
-        const req = await fetch(`http://localhost:5050/library/remove?id=${id}&includeFile=${checked}`);
+        const req = await fetch(
+            `http://localhost:5050/library/remove?id=${id}&includeFile=${checked}`,
+        );
         const resp = await req.json();
-        
-        if (resp.success){
-            toast.success("File deleted")
+
+        if (resp.success) {
+            toast.success("File deleted");
         } else {
-            toast.success("Something went wrong.")
+            toast.error("Something went wrong.");
         }
     };
 </script>

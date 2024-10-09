@@ -1,4 +1,4 @@
-import {toast} from "svelte-sonner"
+import { toast } from "svelte-sonner"
 
 export async function handleFileUpload(e: Event) {
 	e.preventDefault();
@@ -6,10 +6,10 @@ export async function handleFileUpload(e: Event) {
 	const files = (e.target as HTMLInputElement).files;
 	if (!files || files.length === 0) return;
 
-	let formData = new FormData();
-	Array.from(files).forEach((f) => {
+	const formData = new FormData();
+	for(const f of Array.from(files)) {
 		formData.append('file', f);
-	});
+	}
 
 	const req = await fetch('http://localhost:5050/upload', {
 		method: 'POST',
@@ -23,8 +23,6 @@ export async function handleFileUpload(e: Event) {
 	if (response.success) {
 		toast.success("File Upload success");
 	} else {
-		if (response.errorCode == 3) {
-			toast.error("Upload failed. Try again!");
-		}
+		toast.error("Upload failed. Try again!");
 	}
 }

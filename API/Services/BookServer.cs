@@ -47,29 +47,25 @@ public class BookServer : IBookServer
     private static void InterceptImgTags(string id, HtmlDocument document)
     {
         var imgNodes = document.DocumentNode.SelectNodes("//body//img");
-        if (imgNodes != null)
+        if (imgNodes is null) return;
+        
+        foreach (var img in imgNodes)
         {
-            foreach (var img in imgNodes)
-            {
-                UpdateImageSource(img, "src", id);
-            }
+            UpdateImageSource(img, "src", id);
         }
-
+        
         var svgNodes = document.DocumentNode.SelectNodes("//body//image");
-        if (svgNodes != null)
+        if (svgNodes is null) return;
+        foreach (var svg in svgNodes)
         {
-            foreach (var svg in svgNodes)
-            {
-                UpdateImageSource(svg, "src", id);
-                UpdateImageSource(svg, "xlink:href", id);
-            }
+            UpdateImageSource(svg, "src", id);
+            UpdateImageSource(svg, "xlink:href", id);
         }
     }
 
     private static void UpdateImageSource(HtmlNode node, string attributeName, string id)
     {
         var currSrc = node.GetAttributeValue(attributeName, "");
-    
         if (string.IsNullOrEmpty(currSrc))
             return;
 
@@ -98,8 +94,7 @@ public class BookServer : IBookServer
 
         return sb.ToString();
     }
-
-    // TODO: Navigate to Headings
+    
     public List<string> GetToc(string id)
     {
         var bookPath = GetBookFromStorage(id);
