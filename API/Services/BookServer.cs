@@ -20,7 +20,7 @@ public class BookServer : IBookServer
 
     private static string GetBookFromStorage(string id)
     {
-        // Each directory only has 1 file
+        // Each directory has only 1 epub file
         var path = Path.Combine(_libPath, id);
         return Directory.GetFiles(path, "*.epub")[0];
     }
@@ -31,13 +31,12 @@ public class BookServer : IBookServer
         var book = await EpubReader.ReadBookAsync(bookPath);
         
         var document = new HtmlDocument();
-        var sb = new StringBuilder();
         document.LoadHtml(book.ReadingOrder[chapter].Content);
         
         InterceptImgTags(id, document);
-        
         var nodes = document.DocumentNode.SelectNodes("//body");
 
+        var sb = new StringBuilder();
         foreach (var node in nodes)
         {
             sb.AppendLine(node.InnerHtml);
@@ -47,23 +46,41 @@ public class BookServer : IBookServer
 
     private static void InterceptImgTags(string id, HtmlDocument document)
     {
-        var imgNode = document.DocumentNode.SelectNodes("//body//img");
-        if (imgNode is null)
+        var imgNodes = document.DocumentNode.SelectNodes("//body//img");
+        if (imgNodes != null)
+        {
+            foreach (var img in imgNodes)
+            {
+                UpdateImageSource(img, "src", id);
+            }
+        }
+
+        var svgNodes = document.DocumentNode.SelectNodes("//body//image");
+        if (svgNodes != null)
+        {
+            foreach (var svg in svgNodes)
+            {
+                UpdateImageSource(svg, "src", id);
+                UpdateImageSource(svg, "xlink:href", id);
+            }
+        }
+    }
+
+    private static void UpdateImageSource(HtmlNode node, string attributeName, string id)
+    {
+        var currSrc = node.GetAttributeValue(attributeName, "");
+    
+        if (string.IsNullOrEmpty(currSrc))
             return;
 
-        foreach (var img in imgNode)
+        if (currSrc.Contains('/'))
         {
-            var currSrc = img.GetAttributeValue("src", "");
-            
-            if (currSrc.Contains('/'))
-            {
-                var imgName = currSrc.Split('/')[1];
-                img.SetAttributeValue("src", $"http://localhost:5050/read/image/{id}?img={imgName}");
-            }
-            else
-            {
-                img.SetAttributeValue("src", $"http://localhost:5050/read/image?img={currSrc}");
-            }
+            var imgName = currSrc.Split('/').Last();
+            node.SetAttributeValue(attributeName, $"http://localhost:5050/read/image?img={imgName}&id={id}");
+        }
+        else
+        {
+            node.SetAttributeValue(attributeName, $"http://localhost:5050/read/image?img={currSrc}");
         }
     }
 
