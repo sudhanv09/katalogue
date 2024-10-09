@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@biomejs/biome": "^1.9.3",
 		"bits-ui": "^0.21.15",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.441.0",
