@@ -118,7 +118,7 @@ public class LibraryController : Controller
     /// </summary>
     /// <returns></returns>
     
-    [HttpGet("reading")]
+    [HttpGet("recent")]
     public async Task<List<BookResponse>> GetRecent()
     {
         return await _lib.GetRecentBooks();
