@@ -1,5 +1,3 @@
-using API.Models;
-using API.Models.Dto;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,12 +19,12 @@ public class UploadController : Controller
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IResult> HandleIncomingFile([FromForm] FileDto dto)
+    public async Task<IResult> HandleIncomingFile([FromForm] List<IFormFile> dto)
     {
         if (!ModelState.IsValid)
             return Results.BadRequest("No file uploaded");
         
-        foreach (var file in dto.file)
+        foreach (var file in dto)
         {
             if (Path.GetExtension(file.FileName) != ".epub")
                 return Results.BadRequest("Wrong File Extension. Epub Only");

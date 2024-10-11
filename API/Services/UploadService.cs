@@ -52,6 +52,7 @@ public class UploadService(AppDbContext ctx) : IUploadService
         var epubData = EpubReader.ReadBook(file.OpenReadStream());
         var coverName = epubData.Content.Cover?.FilePath.Split('/').Last();
         var coverPath = $"{generateGuid}/{coverName}";
+        var pageCount = GetPageCount(epubData);
         
         var bookData = new Book {
             Id = generateGuid,
@@ -59,7 +60,8 @@ public class UploadService(AppDbContext ctx) : IUploadService
             Author = epubData.Author,
             Description = epubData.Description,
             CoverPath = coverPath,
-            Status = ReadingStatus.ToRead
+            Status = ReadingStatus.ToRead,
+            TotalPages = pageCount
         };
         return bookData;
     }
@@ -76,5 +78,11 @@ public class UploadService(AppDbContext ctx) : IUploadService
             var writePath = Path.Combine(path, tmp);
             File.WriteAllBytes(writePath, img.Content);
         }
+    }
+
+    private static int GetPageCount(EpubBook book)
+    {
+        var nav = book.Navigation;
+        return nav.Count() > 1 ? nav.Count : nav[0].NestedItems.Count;
     }
 }
