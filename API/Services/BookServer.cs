@@ -171,15 +171,12 @@ public class BookServer : IBookServer
 
     private async Task UpdateReadTime(string id)
     {
-        var updateTime = new Book()
+        var book = await _ctx.Books.FindAsync(Guid.Parse(id));
+        if (book != null)
         {
-            Id = Guid.Parse(id),
-            LastRead = DateTime.UtcNow
-        };
-        
-        _ctx.Books.Attach(updateTime);
-        _ctx.Entry(updateTime).Property(x => x.LastRead).IsModified = true;
-        await _ctx.SaveChangesAsync();
+            book.LastRead = DateTime.UtcNow;
+            await _ctx.SaveChangesAsync();
+        }
     }
 
     private async Task UpdateProgress(string id, int progress)
