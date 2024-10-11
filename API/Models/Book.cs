@@ -10,4 +10,6 @@ public class Book
     public string? CoverPath { get; set; }
     public ReadingStatus Status { get; set; }
     public int Progress { get; set; }
+    public int TotalPages { get; set; }
+    public DateTime? LastRead { get; set; }
 }

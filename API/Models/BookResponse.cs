@@ -10,4 +10,6 @@ public class BookResponse
     public byte[]? Cover { get; set; }
     public ReadingStatus Status { get; set; }
     public int Progress { get; set; }
+    public int TotalPages { get; set; }
+    public DateTime? LastRead { get; set; }
 }
