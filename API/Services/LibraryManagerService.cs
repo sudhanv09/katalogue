@@ -69,6 +69,16 @@ public class LibraryManagerService : ILibraryService
         return finished.Select(ResolveResponse).ToList();
     }
 
+    public async Task<List<BookResponse>> GetRecentBooks()
+    {
+        var recent = await Ctx.Books
+            .Where(b => b.Status == ReadingStatus.Reading)
+            .OrderByDescending(r => r.LastRead)
+            .Take(10).
+            ToListAsync();
+        return recent.Select(ResolveResponse).ToList();
+    }
+
     public async Task<Result> RemoveBook(string id, bool includeFiles)
     {
         var validId = Guid.TryParse(id, out var newId);
@@ -98,7 +108,9 @@ public class LibraryManagerService : ILibraryService
             Cover = cover,
             Description = book.Description,
             Progress = book.Progress,
-            Status = book.Status
+            Status = book.Status,
+            TotalPages = book.TotalPages,
+            LastRead = book.LastRead
         };
 
     }

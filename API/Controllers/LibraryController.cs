@@ -113,6 +113,17 @@ public class LibraryController : Controller
         return await _lib.GetReading();
     }
     
+    /// <summary>
+    /// Get books recently read
+    /// </summary>
+    /// <returns></returns>
+    
+    [HttpGet("reading")]
+    public async Task<List<BookResponse>> GetRecent()
+    {
+        return await _lib.GetRecentBooks();
+    }
+    
     [HttpDelete("remove")]
     public async Task<IResult> RemoveBook(string id, bool includeFile)
     {

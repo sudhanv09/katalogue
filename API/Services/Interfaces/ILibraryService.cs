@@ -13,6 +13,7 @@ public interface ILibraryService
     Task<List<BookResponse>> GetReading();
     Task<List<BookResponse>> GetUserReadList();
     Task<List<BookResponse>> GetFinishedList();
+    Task<List<BookResponse>> GetRecentBooks();
     Task<Result> RemoveBook(string id, bool includeFile);
 
 }
