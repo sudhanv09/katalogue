@@ -9,6 +9,8 @@
     data.book.description !== null
       ? data.book.description.replace(/<[^>]*>/g, "")
       : "No description";
+
+  const progress = (data.book.progress/data.book.totalPages)*100;
 </script>
 
 <div class="p-4 mt-8 flex lg:flex-row">
@@ -33,6 +35,13 @@
     <p class="leading-7 [&:not(:first-child)]:mt-6">
       {description}
     </p>
+
+    <div class="flex space-x-5">
+      <p class="text-neutral-400 text-sm">Read Percentage: {progress}%</p>
+      <p class="text-neutral-400 text-sm">Chapters: {data.book.totalPages}</p>
+    </div>
+
+
 
     <div class="flex space-x-5">
       <Button href="/read/{data.book.id}" class="inline-flex items-center">

@@ -6,15 +6,20 @@
     import { Checkbox } from "$lib/shad/ui/checkbox";
     import { page } from "$app/stores";
     import { toast } from "svelte-sonner";
+    import { goto } from "$app/navigation";
 
     let checked = false;
     const url = $page.url.pathname;
     const id = url.split("/").pop();
 
     const handleDelete = async () => {
-        const req = await fetch(
-            `http://localhost:5050/library/remove?id=${id}&includeFile=${checked}`,
-        );
+        const url = new URL("http://localhost:5050/library/remove")
+        url.searchParams.set("id", id);
+        if (checked) {
+            url.searchParams.set("includeFile", String(checked))
+        }
+
+        const req = await fetch(url);
         const resp = await req.json();
 
         if (resp.success) {
@@ -22,6 +27,8 @@
         } else {
             toast.error("Something went wrong.");
         }
+
+        goto('/');
     };
 </script>
 

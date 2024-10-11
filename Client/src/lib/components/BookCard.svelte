@@ -4,6 +4,8 @@
   import type { Book } from "../types";
 
   export let book: Book;
+  
+  const p = book.progress / book.totalPages
 </script>
 
   <Card.Root>
@@ -14,7 +16,7 @@
           alt="cover.jpg"
           class="max-w-96 max-h-96 w-full h-full"
         />
-          <Progress class="h-1" value={book.progress} />
+          <Progress class="h-1" value={p} />
       </div>
     </Card.Content>
     <Card.Footer>
