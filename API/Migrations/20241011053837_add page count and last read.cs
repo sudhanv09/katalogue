@@ -15,8 +15,7 @@ namespace API.Migrations
                 name: "LastRead",
                 table: "Books",
                 type: "timestamp with time zone",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "TotalPages",

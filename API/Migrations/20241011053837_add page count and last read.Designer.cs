@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241011024328_add page count and last read")]
+    [Migration("20241011053837_add page count and last read")]
     partial class addpagecountandlastread
     {
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastRead")
+                    b.Property<DateTime?>("LastRead")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Olid")

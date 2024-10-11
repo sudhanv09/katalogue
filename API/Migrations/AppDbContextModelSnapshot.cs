@@ -38,7 +38,7 @@ namespace API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastRead")
+                    b.Property<DateTime?>("LastRead")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Olid")
