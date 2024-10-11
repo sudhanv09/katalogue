@@ -134,6 +134,8 @@ public class BookServer : IBookServer
         {
             await MarkStatus(id, ReadingStatus.Reading);
         }
+
+        await UpdateReadTime(id);
         var content = await GetEbookChapterBody(id, bookProgress);
         return content;
     }
@@ -150,6 +152,7 @@ public class BookServer : IBookServer
     {
         var bookProgress = await GetProgress(id);
         var trackProgress = bookProgress - 1;
+        await UpdateProgress(id, trackProgress);
         return await GetEbookChapterBody(id, trackProgress);
     }
 
@@ -166,7 +169,20 @@ public class BookServer : IBookServer
         return bookProgress;
     }
 
-    public async Task UpdateProgress(string id, int progress)
+    private async Task UpdateReadTime(string id)
+    {
+        var updateTime = new Book()
+        {
+            Id = Guid.Parse(id),
+            LastRead = DateTime.UtcNow
+        };
+        
+        _ctx.Books.Attach(updateTime);
+        _ctx.Entry(updateTime).Property(x => x.LastRead).IsModified = true;
+        await _ctx.SaveChangesAsync();
+    }
+
+    private async Task UpdateProgress(string id, int progress)
     {
         var bookProgress = new Book()
         {
@@ -179,7 +195,7 @@ public class BookServer : IBookServer
         await _ctx.SaveChangesAsync();
     }
     
-    public async Task MarkStatus(string id, ReadingStatus status)
+    private async Task MarkStatus(string id, ReadingStatus status)
     {
         var bookStatus = new Book()
         {

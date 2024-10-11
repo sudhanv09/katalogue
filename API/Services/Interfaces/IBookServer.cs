@@ -12,6 +12,4 @@ public interface IBookServer
    Task<string> StartBook(string id);
    Task<string> NextChapter(string id);
    Task<string> PrevChapter(string id);
-   Task UpdateProgress(string id, int progress);
-   Task MarkStatus(string id, ReadingStatus status);
 }
