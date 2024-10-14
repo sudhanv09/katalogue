@@ -7,6 +7,8 @@ export interface Book {
     cover: string;
     status: BookStatus;
     progress: number;
+    totalPages: number;
+    lastRead: string;
 };
 
 export enum BookStatus {

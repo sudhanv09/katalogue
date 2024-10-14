@@ -1,13 +1,14 @@
 import { toast } from "svelte-sonner"
 
-export async function handleFileUpload(e: Event) {
-	e.preventDefault();
+export async function handleFileUpload(files: FileList | null) {
 
-	const files = (e.target as HTMLInputElement).files;
-	if (!files || files.length === 0) return;
-
+	if (files === null || files.length === 0) {
+		toast.error("No file selected");
+		return;
+	}
+	
 	const formData = new FormData();
-	for(const f of Array.from(files)) {
+	for (const f of Array.from(files)) {
 		formData.append('file', f);
 	}
 
@@ -18,9 +19,7 @@ export async function handleFileUpload(e: Event) {
 			accept: '*/*'
 		}
 	});
-	const response = await req.json();
-
-	if (response.success) {
+	if (req.ok) {
 		toast.success("File Upload success");
 	} else {
 		toast.error("Upload failed. Try again!");

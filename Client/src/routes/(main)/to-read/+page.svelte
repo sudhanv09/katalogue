@@ -10,7 +10,7 @@
     Books you add will be displayed here.
   </p>
 {/if}
-<div class="grid grid-cols-4 gap-4">
+<div class="grid sm:grid-cols-1 lg:grid-cols-5 gap-8">
   {#each data.books as book}
     <BookCard {book} />
   {/each}

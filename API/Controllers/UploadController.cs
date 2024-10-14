@@ -19,16 +19,16 @@ public class UploadController : Controller
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IResult> HandleIncomingFile([FromForm] List<IFormFile> dto)
+    public async Task<IResult> HandleIncomingFile([FromForm] List<IFormFile> file)
     {
         if (!ModelState.IsValid)
             return Results.BadRequest("No file uploaded");
         
-        foreach (var file in dto)
+        foreach (var f in file)
         {
-            if (Path.GetExtension(file.FileName) != ".epub")
+            if (Path.GetExtension(f.FileName) != ".epub")
                 return Results.BadRequest("Wrong File Extension. Epub Only");
-            var response = await _upload.HandleUpload(file);
+            var response = await _upload.HandleUpload(f);
             if (response.IsFailed)
                 return Results.BadRequest("Upload failed");
         }
