@@ -1,16 +1,22 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Button from "$src/lib/shad/ui/button/button.svelte";
-  import { Play, Pencil, Trash } from "lucide-svelte";
+  import { Play, Pencil } from "lucide-svelte";
   import DeleteModal from "$src/lib/components/DeleteModal.svelte";
   export let data: PageData;
 
-  const description =
+  let description: string;
+  let progress: string;
+
+  $: description =
     data.book.description !== null
       ? data.book.description.replace(/<[^>]*>/g, "")
       : "No description";
 
-  const progress = (data.book.progress/data.book.totalPages)*100;
+  $: progress = (
+    (data.book.progress / data.book.totalPages) *
+    100
+  ).toFixed(2);
 </script>
 
 <div class="p-4 mt-8 flex lg:flex-row">
@@ -40,8 +46,6 @@
       <p class="text-neutral-400 text-sm">Read Percentage: {progress}%</p>
       <p class="text-neutral-400 text-sm">Chapters: {data.book.totalPages}</p>
     </div>
-
-
 
     <div class="flex space-x-5">
       <Button href="/read/{data.book.id}" class="inline-flex items-center">

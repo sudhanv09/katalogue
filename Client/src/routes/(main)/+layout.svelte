@@ -33,7 +33,7 @@
 <div
   class="max-h-screen flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-16"
 >
-  <aside class="lg:w-[300px] mx-6 my-12 space-y-10">
+  <aside class="lg:w-[300px] mx-6 my-12 space-y-10 text-center">
     <div>
       <h2
         class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
