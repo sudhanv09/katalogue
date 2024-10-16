@@ -47,19 +47,22 @@ public class BookServer : IBookServer
     private static void InterceptImgTags(string id, HtmlDocument document)
     {
         var imgNodes = document.DocumentNode.SelectNodes("//body//img");
-        if (imgNodes is null) return;
-        
-        foreach (var img in imgNodes)
+        if (imgNodes != null)
         {
-            UpdateImageSource(img, "src", id);
+            foreach (var img in imgNodes)
+            {
+                UpdateImageSource(img, "src", id);
+            }
         }
         
-        var svgNodes = document.DocumentNode.SelectNodes("//body//image");
-        if (svgNodes is null) return;
-        foreach (var svg in svgNodes)
+        var svgNodes = document.DocumentNode.SelectNodes("//svg//image");
+        if (svgNodes != null)
         {
-            UpdateImageSource(svg, "src", id);
-            UpdateImageSource(svg, "xlink:href", id);
+            foreach (var svg in svgNodes)
+            {
+                UpdateImageSource(svg, "src", id);
+                UpdateImageSource(svg, "xlink:href", id);
+            }
         }
     }
 
@@ -106,8 +109,8 @@ public class BookServer : IBookServer
             // Navigation returns Headings
             titles.Add(item.Title);
 
-            if (item.NestedItems.Count <= 0) return [];
-            titles.AddRange(item.NestedItems.Select(sub => sub.Title));
+            if (item.NestedItems.Count >= 0)
+                titles.AddRange(item.NestedItems.Select(sub => sub.Title));
         }
         return titles;
     }

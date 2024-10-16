@@ -82,7 +82,6 @@ public class UploadService(AppDbContext ctx) : IUploadService
 
     private static int GetPageCount(EpubBook book)
     {
-        var nav = book.Navigation;
-        return nav.Count() > 1 ? nav.Count : nav[0].NestedItems.Count;
+        return book.Navigation.Sum(item => item.NestedItems.Count > 0 ? item.NestedItems.Count : 1);
     }
 }
