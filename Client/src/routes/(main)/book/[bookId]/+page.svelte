@@ -19,8 +19,8 @@
   ).toFixed(2);
 </script>
 
-<div class="p-4 mt-8 flex lg:flex-row">
-  <div class="basis-1/4">
+<div class="p-4 mt-4 space-y-8 flex flex-col lg:flex-row">
+  <div class="basis-1/4 flex justify-center">
     <img
       src={`data:image/jpeg;base64,${data.book.cover}`}
       alt="cover"
