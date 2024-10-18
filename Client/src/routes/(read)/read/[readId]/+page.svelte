@@ -55,7 +55,7 @@
 
 <div
   bind:this={scrollContent}
-  class="columns-2 gap-12 py-6 h-[calc(100dvh-58px)] overflow-x-scroll"
+  class="columns-2 gap-12 py-6 h-[calc(100dvh-72px)] overflow-x-scroll"
 >
   <div class="p-8">
     {@html data.content}
