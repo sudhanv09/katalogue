@@ -8,27 +8,25 @@
     import { toast } from "svelte-sonner";
     import { goto } from "$app/navigation";
 
-    let checked = false;
-    const url = $page.url.pathname;
-    const id = url.split("/").pop();
+    // biome-ignore lint/style/useConst: <explanation>
+    let checked = true;
+    const pageUrl = $page.url.pathname;
+    const id = pageUrl.split("/")[2];
 
     const handleDelete = async () => {
-        const url = new URL("http://localhost:5050/library/remove")
-        url.searchParams.set("id", id);
-        if (checked) {
-            url.searchParams.set("includeFile", String(checked))
-        }
+        const url = `http://localhost:5050/library/remove?id=${id}&includeFile=${checked}`;
+        
+        const req = await fetch(url, {
+            method: "DELETE"
+        });
 
-        const req = await fetch(url);
-        const resp = await req.json();
-
-        if (resp.success) {
+        if (req.ok) {
             toast.success("File deleted");
         } else {
             toast.error("Something went wrong.");
         }
 
-        goto('/');
+        goto("/");
     };
 </script>
 
