@@ -11,7 +11,7 @@
     reading!
   </p>
 {/if}
-<div class="grid sm:grid-cols-1 lg:grid-cols-5 gap-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
   {#each data.books as book}
     <BookCard {book} />
   {/each}

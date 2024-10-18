@@ -2,13 +2,14 @@
   import "$src/app.postcss";
   import Nav from "$lib/components/Nav.svelte";
   import FileUpload from "$lib/components/FileUpload.svelte";
-  import Separator from "$lib/shad/ui/separator/separator.svelte";
+  import { Separator } from "$lib/shad/ui/separator";
 
   import { Toaster } from "$lib/shad/ui/sonner";
   import type { PageData } from "./$types";
-  import * as Sheet from "$src/lib/shad/ui/sheet";
-  import Button from "$src/lib/shad/ui/button/button.svelte";
+  import * as Sheet from "$lib/shad/ui/sheet";
+  import { Button } from "$lib/shad/ui/button";
   import { Menu, Search } from "lucide-svelte";
+  import { Input } from "$lib/shad/ui/input";
 
   export let data: PageData;
 
@@ -37,7 +38,7 @@
 <header
   class="min-h-screen flex flex-col lg:flex-row lg:space-x-12 lg:space-y-16"
 >
-  <nav class="hidden md:block space-y-10 lg:w-[300px] mx-6 my-12 text-center">
+  <nav class="hidden lg:block space-y-10 lg:w-[300px] mx-6 my-12 text-center">
     <h2
       class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
     >
@@ -63,7 +64,7 @@
       <Button
         variant="outline"
         size="icon"
-        class="shrink-0 md:hidden mt-4"
+        class="shrink-0 lg:hidden mt-4"
         builders={[builder]}
       >
         <Menu class="h-5 w-5" />
@@ -96,7 +97,15 @@
       </nav>
     </Sheet.Content>
   </Sheet.Root>
-  <div class="lg:h-dvh w-full">
+  <div class="lg:h-dvh w-full mt-4 space-y-8">
+    <div class="relative ml-auto flex-1 md:grow-0">
+      <Search class="text-muted-foreground absolute left-2.5 top-2.5 h-4 w-4" />
+      <Input
+        type="search"
+        placeholder="Search..."
+        class="bg-background w-full rounded-lg pl-8 md:w-[200px] lg:w-[336px]"
+      />
+    </div>
     <slot />
   </div>
 </header>

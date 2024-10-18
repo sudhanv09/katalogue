@@ -47,9 +47,9 @@ public class ReadController : Controller
         var image = await _book.GetImageByName(img, id);
         if (image is null)
         {
-            return Results.BadRequest("Not Found");
+            return Results.NotFound("Not Found");
         }
-        return Results.Ok(image);
+        return Results.Ok(File(image, "image/jpeg"));
     }
 
     /// <summary>

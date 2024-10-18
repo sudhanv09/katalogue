@@ -15,6 +15,10 @@
   async function handleKeyPress(event: KeyboardEvent) {
     switch (event.key) {
       case "n": {
+        scrollContent.scroll({
+          left: 0,
+          behavior: "smooth",
+        });
         const next = await fetch(`http://localhost:5050/read/next?id=${id}`);
         data.content = await next.text();
         return data;

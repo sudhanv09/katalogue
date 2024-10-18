@@ -13,9 +13,9 @@
 	export let items: { href: string; title: string }[];
 </script>
 
-<nav
+<div
 	class={cn(
-		"flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1",
+		"flex space-x-2 flex-col lg:space-x-0 lg:space-y-1",
 		className,
 	)}
 >
@@ -43,4 +43,4 @@
 			</div>
 		</Button>
 	{/each}
-</nav>
+</div>

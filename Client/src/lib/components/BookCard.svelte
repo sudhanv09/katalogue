@@ -16,7 +16,7 @@
           alt="cover.jpg"
           class="max-w-96 max-h-96 w-full h-full"
         />
-          <Progress class="h-1" value={p} />
+          <Progress class="h-1" max={1} value={p} />
       </div>
     </Card.Content>
     <Card.Footer>
