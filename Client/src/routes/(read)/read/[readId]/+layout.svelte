@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { LayoutData } from "./$types";
     import Button from "$src/lib/shad/ui/button/button.svelte";
     import { ArrowLeft, ArrowRight } from "lucide-svelte";
     import { page } from "$app/stores";
 
-    export let data: LayoutData;
+    let { data, children } = $props();
     const url = $page.url.pathname;
     const id = url.split("/").pop();
 
@@ -31,5 +30,5 @@
     </Button>
 </header>
 <div>
-    <slot />
+    {@render children()}
 </div>

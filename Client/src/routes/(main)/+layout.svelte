@@ -5,13 +5,12 @@
   import { Separator } from "$lib/shad/ui/separator";
 
   import { Toaster } from "$lib/shad/ui/sonner";
-  import type { PageData } from "./$types";
   import * as Sheet from "$lib/shad/ui/sheet";
   import { Button } from "$lib/shad/ui/button";
   import { Menu, Search } from "lucide-svelte";
   import { Input } from "$lib/shad/ui/input";
 
-  export let data: PageData;
+  let { data, children } = $props();
 
   const sidebarNavItems = [
     {
@@ -51,7 +50,7 @@
     <div class="space-y-6">
       <h3 class="scroll-m-20 text-xl font-semibold tracking-tight">Recent</h3>
       <div class="space-y-3">
-        {#each data.recent as item}
+        {#each data.recentBook as item}
           <li class="list-none text-neutral-500">
             <a href={`/book/${item.id}`}>{item.title}</a>
           </li>
@@ -87,7 +86,7 @@
             Recent
           </h3>
           <div class="space-y-3">
-            {#each data.recent as item}
+            {#each data.recentBook as item}
               <li class="list-none text-neutral-500">
                 <a href={`/book/${item.id}`}>{item.title}</a>
               </li>
@@ -106,6 +105,6 @@
         class="bg-background w-full rounded-lg pl-8 md:w-[200px] lg:w-[336px]"
       />
     </div>
-    <slot />
+    {@render children()}
   </div>
 </header>

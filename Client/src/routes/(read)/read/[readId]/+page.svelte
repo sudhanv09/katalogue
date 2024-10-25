@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
   import "$src/app.postcss";
   import HelpModal from "$src/lib/components/HelpModal.svelte";
 
-  export let data: PageData;
+  let { data } = $props();
   let scrollContent: HTMLDivElement;
-  let modalOpen = false;
+  let modalOpen = $state(false);
 
   const url = $page.url.pathname;
   const id = url.split("/").pop();
