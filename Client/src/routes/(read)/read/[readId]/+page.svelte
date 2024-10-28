@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
-  import "$src/app.postcss";
+
   import HelpModal from "$src/lib/components/HelpModal.svelte";
 
   let { data } = $props();
@@ -43,7 +43,7 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeyPress} />
+<svelte:window onkeydown={handleKeyPress} />
 <HelpModal {modalOpen} />
 <svelte:head>
   <link

@@ -2,6 +2,7 @@
     import Button from "$src/lib/shad/ui/button/button.svelte";
     import { ArrowLeft, ArrowRight } from "lucide-svelte";
     import { page } from "$app/stores";
+    import "$src/app.postcss";
 
     let { data, children } = $props();
     const url = $page.url.pathname;
@@ -21,11 +22,11 @@
 </script>
 
 <header class="top-0 flex justify-center items-center space-x-8 h-12">
-    <Button variant="ghost" on:click={nextChp}>
+    <Button variant="ghost" onclick={nextChp}>
         <ArrowLeft class="h-4 w-4"></ArrowLeft>
     </Button>
     <h1 class="font-bold">{data.info.title}</h1>
-    <Button variant="ghost" on:click={prevChp}>
+    <Button variant="ghost" onclick={prevChp}>
         <ArrowRight class="h-4 w-4"></ArrowRight>
     </Button>
 </header>
