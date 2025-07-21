@@ -1,0 +1,12 @@
+node_modules
+
+.output
+/.svelte-kit
+
+# Env
+.env
+.env.*
+
+# SQLite
+*.db
+src/tests/*.epub
