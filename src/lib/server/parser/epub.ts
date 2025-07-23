@@ -18,6 +18,7 @@ export class Book {
     private metadata!: ParsedEPUB
     private manifestMap!: Map<string, ManifestItem>
     private chapters: Chapter[] = []
+    private cover: { href: string; blob: Blob } | null = null
 
     private constructor(zip: Record<string, Uint8Array>) {
         this.zip = zip
@@ -64,6 +65,25 @@ export class Book {
             : [opf.package.manifest.item]
 
         this.manifestMap = new Map(items.map(i => [i['@_id'], i]))
+
+        // get cover
+        const metaArray = Array.isArray(md.meta) ? md.meta : [md.meta]
+        const coverMeta = metaArray?.find(m => m?.['@_name'] === 'cover' && m?.['@_content'])
+        if (coverMeta) {
+            const coverId = coverMeta['@_content'] ?? ''
+            const coverItem = this.manifestMap.get(coverId)
+            if (coverItem) {
+                const href = this.resolveRelativePath(this.opfPath, coverItem['@_href'])
+                const bytes = this.zip[href]
+                if (bytes) {
+                    const mimeType = coverItem['@_media-type']
+                    this.cover = {
+                        href,
+                        blob: new Blob([bytes], { type: mimeType })
+                    }
+                }
+            }
+        }
 
         // Spine to chapters
         const spine = opf.package.spine.itemref
@@ -116,6 +136,10 @@ export class Book {
         return [...this.manifestMap.values()].filter(item =>
             item['@_media-type'].startsWith('image/')
         )
+    }
+
+    getCover(): { href: string; blob: Blob } | null {
+        return this.cover
     }
 
     private resolveRelativePath(base: string, relative: string): string {

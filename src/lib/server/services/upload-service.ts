@@ -6,12 +6,13 @@ import { library } from "$lib/server/db/schema";
 import { customAlphabet } from "nanoid";
 import { eq, and } from 'drizzle-orm';
 import type { UploadResult } from "$lib/server/types/uploadresult";
+import { homedir } from "os";
 
-const UPLOAD_DIR = 'katalogue/';
+const UPLOAD_DIR = join(homedir(), 'katalogue/');
 const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz';
 const shortid = customAlphabet(alphabet, 5);
 
-async function upload_file(files: File[]) {
+export async function upload_file(files: File[]) {
     const results: UploadResult[] = []
     for (const file of files) {
         let metadata;
@@ -19,6 +20,7 @@ async function upload_file(files: File[]) {
         const book = await readBook(file);
         metadata = book.getMetadata();
         const assets = book.getImages();
+        const cover = book.getCover();
 
         // check if the book already exists first
         const existing = await db
@@ -41,7 +43,8 @@ async function upload_file(files: File[]) {
         }
 
         // Prepare storage paths
-        const folderName = `${metadata.author}_${shortid()}`;
+        let id = shortid()
+        const folderName = `${id}_${metadata.author}`;
         const bookDir = join(UPLOAD_DIR, folderName);
         const epubPath = join(bookDir, `${file.name}`);
         const assetsDir = join(bookDir, 'assets');
@@ -64,12 +67,14 @@ async function upload_file(files: File[]) {
 
         // 2. Insert metadata to DB
         const inserted = await db.insert(library).values({
+            id: id,
             title: metadata.title,
             author: metadata.author,
             description: metadata.description,
             read_status: 'to-read',
             progress: 0,
-            dir: folderName
+            dir: folderName,
+            cover_path: cover && join('assets', cover.href)
         });
 
         results.push({
