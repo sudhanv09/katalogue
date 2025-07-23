@@ -1,4 +1,4 @@
-import { readBook } from '../lib/parser/epub'
+import { readBook } from '$lib/server/parser/epub'
 import { readFile } from "fs/promises"
 import { describe, it, expect, beforeAll } from 'vitest';
 
