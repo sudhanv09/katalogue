@@ -13,8 +13,7 @@ export const library = sqliteTable('library', {
 	title: text('title'),
 	author: text('author'),
 	description: text('description'),
-	read_status: text('status', {enum: ["read", "reading", "finished", "dropped"]}),
+	read_status: text('status', {enum: ["to-read", "reading", "finished", "dropped"]}),
 	progress: integer('progress'),
 	dir: text('dir'),
-	
 })
