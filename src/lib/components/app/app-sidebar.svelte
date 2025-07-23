@@ -18,12 +18,17 @@
 </script>
 
 <Sidebar.Root>
-  <Sidebar.Header />
+  <Sidebar.Header class="py-4">
+    <h1
+      class="text-center scroll-m-20 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
+    >
+      Katalogue
+    </h1>
+  </Sidebar.Header>
   <Sidebar.Content>
     <Sidebar.Group>
-      <Sidebar.GroupLabel>Application</Sidebar.GroupLabel>
       <Sidebar.GroupContent>
-        <Sidebar.Menu>
+        <Sidebar.Menu class="p-3 space-y-3">
           {#each items as item (item.title)}
             <Sidebar.MenuItem>
               <Sidebar.MenuButton>

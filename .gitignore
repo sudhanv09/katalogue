@@ -9,4 +9,4 @@ node_modules
 
 # SQLite
 *.db
-src/tests/*.epub
+**/*.epub
