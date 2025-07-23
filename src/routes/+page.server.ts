@@ -1,7 +1,14 @@
 import type { Actions } from '@sveltejs/kit';
-import { readBook } from '@/server/parser/epub';
+import type { PageServerLoad } from './$types';
+
+import { toast } from 'svelte-sonner';
+import { upload_file } from '@/server/services/upload-service';
+import { get_books } from '@/server/services/library-service';
 
 
+export const load: PageServerLoad = async () => {
+    return { books: await get_books() }
+};
 
 export const actions: Actions = {
     upload: async ({ request }) => {
@@ -13,12 +20,14 @@ export const actions: Actions = {
         }
 
         try {
-            const result = await readBook(file);
-            console.log(result.getMetadata().title)
-            return {
-                success: true,
-                parsed: result
-            };
+            const result = await upload_file([file]);
+            result.forEach(item => {
+                if (item.status === 'error') {
+                    toast(`Error ${item.error}`)
+                } else {
+                    toast(`Item: ${item.id} uploaded successfully`)
+                }
+            });
         } catch (err) {
             return { success: false, error: 'Failed to parse EPUB' };
         }
