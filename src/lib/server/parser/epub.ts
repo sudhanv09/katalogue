@@ -8,7 +8,7 @@ import type {
     ManifestItem
 } from './types'
 
-export class Book {
+class Book {
     private zip: Record<string, Uint8Array>
     private parser = new XMLParser({
         ignoreAttributes: false,

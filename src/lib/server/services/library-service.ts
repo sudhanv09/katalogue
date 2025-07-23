@@ -1,9 +1,10 @@
 import { db } from "$lib/server/db";
 import { library, history } from "$lib/server/db/schema";
 import { eq, desc } from 'drizzle-orm';
+import type { Book } from "../types/book";
 
 export async function get_books() {
-    return await db.select().from(library);
+    return await db.select().from(library) as Book[];
 }
 
 export async function get_authors() {

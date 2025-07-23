@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types';
 import { toast } from 'svelte-sonner';
 import { upload_file } from '@/server/services/upload-service';
 import { get_books } from '@/server/services/library-service';
+import type { Book } from '@/server/types/book';
 
 
 export const load: PageServerLoad = async () => {
