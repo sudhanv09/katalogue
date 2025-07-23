@@ -14,7 +14,7 @@ export const library = sqliteTable('library', {
 	title: text('title'),
 	author: text('author'),
 	description: text('description'),
-	read_status: text('status', { enum: ["to-read", "reading", "finished", "dropped"] }),
+	read_status: text('status', { enum: ["to-read", "reading", "finished", "dropped"] }).default('to-read'),
 	cover_path: text('cover_path'),
 	progress: integer('progress'),
 	dir: text('dir'),

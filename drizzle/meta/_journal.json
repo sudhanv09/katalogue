@@ -22,6 +22,13 @@
       "when": 1753245934081,
       "tag": "0002_cover col",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1753249345982,
+      "tag": "0003_default read_status",
+      "breakpoints": true
     }
   ]
 }
