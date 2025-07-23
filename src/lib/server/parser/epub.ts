@@ -53,6 +53,7 @@ export class Book {
         this.metadata = {
             title: this.getTextValue(md['dc:title']),
             author: this.getTextValue(md['dc:creator']),
+            description: this.getTextValue(md['dc:description']),
             language: this.getTextValue(md['dc:language']),
             chapters: [],
         }

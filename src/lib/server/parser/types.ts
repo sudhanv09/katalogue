@@ -29,6 +29,7 @@ export interface OPFMetadata {
   'dc:title'?: string | string[]
   'dc:creator'?: string | OPFPerson | (string | OPFPerson)[]
   'dc:language'?: string
+  'dc:description'?: string
   'dc:identifier'?: string | { '#text': string; '@_id': string }
   meta?: OPFMeta | OPFMeta[]
 }
@@ -61,6 +62,7 @@ export interface SpineItem {
 export interface ParsedEPUB {
   title: string
   author: string
+  description: string
   language: string
   chapters: Chapter[]
 }
