@@ -5,6 +5,6 @@ export type Book = {
     author: string;
     description: string;
     read_status: "to-read" | "reading" | "finished" | "dropped";
-    cover_path: string;
+    cover: string;
     progress: number;
 }
