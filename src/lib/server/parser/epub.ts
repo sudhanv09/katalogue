@@ -74,6 +74,16 @@ class Book {
             const coverItem = this.manifestMap.get(coverId)
             if (coverItem) {
                 this.cover = coverItem['@_href']
+            } else {
+                // Fallback: Find a manifest item that is likely the cover
+                const coverCandidate = items.find(item =>
+                    item['@_media-type'].startsWith('image/') &&
+                    (item['@_id'].toLowerCase().includes('cover') ||
+                        item['@_href'].toLowerCase().includes('cover'))
+                ) || items.find(item => item['@_media-type'].startsWith('image/'))
+                if (coverCandidate) {
+                    this.cover = coverCandidate['@_href']
+                }
             }
         }
 
