@@ -10,6 +10,12 @@
   import type { UploadResult } from "$/lib/server/types/uploadresult";
   import type { SubmitFunction } from "@sveltejs/kit";
 
+  interface ServerResponse {
+    success?: boolean;
+    result?: UploadResult[];
+    error?: string;
+  }
+
   let form = $props<{
     success?: boolean;
     results?: UploadResult[];
@@ -19,26 +25,27 @@
   const handleEnhance: SubmitFunction = () => {
     return async ({ result }) => {
       if (result.type === "success" && result.data) {
-        const { data } = result;
-        if (data.success && data.results) {
-          for (const item of data.results) {
-            if (item.status === "error") {
-              toast.error(`Error: ${item.error}`, {
-                position: "top-right",
-                duration: 3000,
-              });
-            } else {
-              toast.success(`Item ${item.id} uploaded successfully`, {
-                position: "top-right",
-                duration: 3000,
-              });
+        const response = result.data as ServerResponse;
+
+        if (response.success) {
+          if (response.result && response.result.length > 0) {
+            for (const item of response.result) {
+              if (item.status === "error") {
+                toast.error(
+                  `Upload failed for ${item.id || "an item"}: ${item.error || "Unknown error"}`,
+                  {
+                    position: "top-right",
+                    duration: 3000,
+                  }
+                );
+              } else {
+                toast.success(`Item ${item.id} uploaded successfully`, {
+                  position: "top-right",
+                  duration: 3000,
+                });
+              }
             }
           }
-        } else {
-          toast.error(`Upload failed: ${data.error || "Unknown error"}`, {
-            position: "top-right",
-            duration: 3000,
-          });
         }
       } else {
         toast.error("Upload failed: An unexpected error occurred", {
