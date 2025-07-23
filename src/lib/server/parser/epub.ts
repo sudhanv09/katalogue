@@ -18,7 +18,7 @@ class Book {
     private metadata!: ParsedEPUB
     private manifestMap!: Map<string, ManifestItem>
     private chapters: Chapter[] = []
-    private cover: { href: string; blob: Blob } | null = null
+    private cover: string | null = null
 
     private constructor(zip: Record<string, Uint8Array>) {
         this.zip = zip
@@ -73,15 +73,7 @@ class Book {
             const coverId = coverMeta['@_content'] ?? ''
             const coverItem = this.manifestMap.get(coverId)
             if (coverItem) {
-                const href = this.resolveRelativePath(this.opfPath, coverItem['@_href'])
-                const bytes = this.zip[href]
-                if (bytes) {
-                    const mimeType = coverItem['@_media-type']
-                    this.cover = {
-                        href,
-                        blob: new Blob([bytes], { type: mimeType })
-                    }
-                }
+                this.cover = coverItem['@_href']
             }
         }
 
@@ -138,7 +130,7 @@ class Book {
         )
     }
 
-    getCover(): { href: string; blob: Blob } | null {
+    getCover(): string | null {
         return this.cover
     }
 

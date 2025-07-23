@@ -6,9 +6,8 @@ import { library } from "$lib/server/db/schema";
 import { customAlphabet } from "nanoid";
 import { eq, and } from 'drizzle-orm';
 import type { UploadResult } from "$lib/server/types/uploadresult";
-import { homedir } from "os";
+import { UPLOAD_DIR } from "$/consts";
 
-const UPLOAD_DIR = join(homedir(), 'katalogue/');
 const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz';
 const shortid = customAlphabet(alphabet, 5);
 
@@ -23,7 +22,7 @@ export async function upload_file(files: File[]) {
         const cover = book.getCover();
 
         // check if the book already exists first
-        const existing = await db
+        const existing = db
             .select()
             .from(library)
             .where(
@@ -74,7 +73,7 @@ export async function upload_file(files: File[]) {
             read_status: 'to-read',
             progress: 0,
             dir: folderName,
-            cover_path: cover && join('assets', cover.href)
+            cover_path: cover && join('assets', cover)
         });
 
         results.push({
