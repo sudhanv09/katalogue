@@ -5,9 +5,10 @@
   import UploadForm from "./upload-form.svelte";
 
   let search_text = $state("");
+  let form = $props();
 </script>
 
-<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4 w-full">
   <div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
     <SidebarTrigger class="-ml-1" />
     <Separator
@@ -23,6 +24,6 @@
       bind:value={search_text}
       class="peer block w-full rounded-md border py-[9px] pl-10 text-sm"
     />
-    <UploadForm />
+    <UploadForm {form}/>
   </div>
 </header>

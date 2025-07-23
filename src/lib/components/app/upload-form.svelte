@@ -4,6 +4,8 @@
   import { Input } from "$lib/components/ui/input/index.js";
   import { Label } from "$lib/components/ui/label/index.js";
   import CloudUpload from "@lucide/svelte/icons/cloud-upload";
+
+  export let form: any;
 </script>
 
 <Dialog.Root>
@@ -17,12 +19,15 @@
         Upload your epubs to start reading.
       </Dialog.Description>
     </Dialog.Header>
-    <div class="grid w-full max-w-sm items-center gap-1.5">
-      <Label for="epub">File</Label>
-      <Input id="epub" type="file" accept=".epub" multiple/>
-    </div>
-    <Dialog.Footer>
+    <form method="POST" action="?/upload" enctype="multipart/form-data" class="space-y-4">
+      {#if form?.error}
+        <p class="text-red-500">{form.error}</p>
+      {/if}
+      <div class="grid w-full max-w-sm items-center gap-1.5">
+        <Label for="epub">File</Label>
+        <Input id="epub" name="file" type="file" accept=".epub" multiple />
+      </div>
       <Button type="submit">Save changes</Button>
-    </Dialog.Footer>
+    </form>
   </Dialog.Content>
 </Dialog.Root>
