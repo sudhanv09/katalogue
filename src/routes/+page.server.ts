@@ -1,10 +1,8 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-import { toast } from 'svelte-sonner';
 import { upload_file } from '@/server/services/upload-service';
 import { get_books } from '@/server/services/library-service';
-import type { Book } from '@/server/types/book';
 
 
 export const load: PageServerLoad = async () => {
@@ -14,21 +12,15 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
     upload: async ({ request }) => {
         const data = await request.formData();
-        const file = data.get('file') as File;
+        const files = data.getAll('file') as File[];
 
-        if (!file) {
+        if (!files || files.length === 0) {
             return { success: false, error: 'No file selected' };
         }
 
         try {
-            const result = await upload_file([file]);
-            result.forEach(item => {
-                if (item.status === 'error') {
-                    toast(`Error ${item.error}`)
-                } else {
-                    toast(`Item: ${item.id} uploaded successfully`)
-                }
-            });
+            const result = await upload_file(files);
+            return { success: true, result };
         } catch (err) {
             return { success: false, error: 'Failed to parse EPUB' };
         }

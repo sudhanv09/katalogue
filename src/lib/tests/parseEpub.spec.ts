@@ -15,7 +15,6 @@ describe('OPF parsing', () => {
         const book = await readBook(file)
         const metadata = book.getMetadata()
 
-        console.log(metadata.language)
         expect(metadata.title).toBe('Blindsight')
         expect(metadata.author).toBe('Peter Watts')
         expect(metadata.language).toBe('en')

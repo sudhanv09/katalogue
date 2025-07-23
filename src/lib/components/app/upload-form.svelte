@@ -5,7 +5,49 @@
   import { Label } from "$lib/components/ui/label/index.js";
   import CloudUpload from "@lucide/svelte/icons/cloud-upload";
 
-  export let form: any;
+  import { enhance } from "$app/forms";
+  import { toast } from "svelte-sonner";
+  import type { UploadResult } from "$/lib/server/types/uploadresult";
+  import type { SubmitFunction } from "@sveltejs/kit";
+
+  let form = $props<{
+    success?: boolean;
+    results?: UploadResult[];
+    error?: string;
+  }>();
+
+  const handleEnhance: SubmitFunction = () => {
+    return async ({ result }) => {
+      if (result.type === "success" && result.data) {
+        const { data } = result;
+        if (data.success && data.results) {
+          for (const item of data.results) {
+            if (item.status === "error") {
+              toast.error(`Error: ${item.error}`, {
+                position: "top-right",
+                duration: 3000,
+              });
+            } else {
+              toast.success(`Item ${item.id} uploaded successfully`, {
+                position: "top-right",
+                duration: 3000,
+              });
+            }
+          }
+        } else {
+          toast.error(`Upload failed: ${data.error || "Unknown error"}`, {
+            position: "top-right",
+            duration: 3000,
+          });
+        }
+      } else {
+        toast.error("Upload failed: An unexpected error occurred", {
+          position: "top-right",
+          duration: 3000,
+        });
+      }
+    };
+  };
 </script>
 
 <Dialog.Root>
@@ -19,7 +61,13 @@
         Upload your epubs to start reading.
       </Dialog.Description>
     </Dialog.Header>
-    <form method="POST" action="?/upload" enctype="multipart/form-data" class="space-y-4">
+    <form
+      method="POST"
+      action="?/upload"
+      enctype="multipart/form-data"
+      class="space-y-4"
+      use:enhance={handleEnhance}
+    >
       {#if form?.error}
         <p class="text-red-500">{form.error}</p>
       {/if}

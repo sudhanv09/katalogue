@@ -1,12 +1,13 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card/index.js";
   let { book } = $props();
+
 </script>
 
 <a href={`/books/${book.id}`}>
   <Card.Root class="w-full max-w-sm">
     <Card.Content>
-      <img src="" alt="" />
+      <img src={book.cover} alt="" />
     </Card.Content>
     <Card.Footer class="flex-col gap-2">
       <div>
