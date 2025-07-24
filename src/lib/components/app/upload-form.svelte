@@ -16,11 +16,7 @@
     error?: string;
   }
 
-  let form = $props<{
-    success?: boolean;
-    results?: UploadResult[];
-    error?: string;
-  }>();
+  let form = $props();
 
   const handleEnhance: SubmitFunction = () => {
     return async ({ result }) => {

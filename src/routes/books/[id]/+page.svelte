@@ -19,7 +19,6 @@
     <p class="text-muted-foreground text-md">Progress: {data.book.progress}%</p>
     <div>
       <Button>Read</Button>
-      <Button>Read</Button>
     </div>
   </div>
 </main>
