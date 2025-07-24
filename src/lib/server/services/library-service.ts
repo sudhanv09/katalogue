@@ -57,8 +57,6 @@ export async function get_author_books(author: string): Promise<Result<Book[], E
     return ok(book)
 }
 
-export async function get_book_toc(id: string) { }
-
 export async function get_recent(limit: number = 5) {
     return await db
         .select({
