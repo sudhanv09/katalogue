@@ -8,7 +8,7 @@ import type {
     ManifestItem
 } from './types'
 
-class Book {
+export class EpubReader {
     private zip: Record<string, Uint8Array>
     private parser = new XMLParser({
         ignoreAttributes: false,
@@ -24,10 +24,10 @@ class Book {
         this.zip = zip
     }
 
-    static async fromFile(file: File): Promise<Book> {
+    static async fromFile(file: File): Promise<EpubReader> {
         const buffer = await file.arrayBuffer()
         const zip = unzipSync(new Uint8Array(buffer))
-        const book = new Book(zip)
+        const book = new EpubReader(zip)
         await book.load()
         return book
     }
@@ -155,5 +155,5 @@ class Book {
 }
 
 export async function readBook(file: File) {
-    return await Book.fromFile(file)
+    return await EpubReader.fromFile(file)
 }
