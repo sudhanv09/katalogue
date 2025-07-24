@@ -8,8 +8,8 @@
   let form = $props();
 </script>
 
-<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4 w-full">
-  <div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+<header class="flex justify-between h-16 shrink-0 items-center gap-2 border-b px-4 w-full">
+  <div class="flex items-center gap-1 px-4 lg:gap-2 lg:px-6">
     <SidebarTrigger class="-ml-1" />
     <Separator
       orientation="vertical"
