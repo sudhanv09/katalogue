@@ -10,6 +10,32 @@ export async function get_books(): Promise<Book[]> {
     return Promise.all(items.map(libraryToBook))
 }
 
+export async function get_book_by_id(id: string): Promise<Result<Book, Error>> {
+    const item = await db.query.library.findFirst({
+        where: eq(library.id, id)
+    })
+
+    if (!item) {
+        return err(new Error(`Book with id ${id} not found`))
+    }
+
+    const book = await libraryToBook(item)
+    return ok(book)
+}
+
+export async function get_books_by_status(status: "to-read" | "reading" | "finished" | "dropped"): Promise<Result<Book[], Error>> {
+    const item = await db.query.library.findMany({
+        where: eq(library.read_status, status)
+    })
+
+    if (!item) {
+        return err(new Error(`No books with ${status} found`))
+    }
+
+    const book = await Promise.all(item.map(libraryToBook))
+    return ok(book)
+}
+
 export async function get_authors(): Promise<(string | null)[]> {
     const result = await db.select({ author: library.author })
         .from(library)
@@ -28,19 +54,6 @@ export async function get_author_books(author: string): Promise<Result<Book[], E
     }
 
     const book = await Promise.all(item.map(libraryToBook))
-    return ok(book)
-}
-
-export async function get_book_by_id(id: string): Promise<Result<Book, Error>> {
-    const item = await db.query.library.findFirst({
-        where: eq(library.id, id)
-    })
-
-    if (!item) {
-        return err(new Error(`Book with id ${id} not found`))
-    }
-
-    const book = await libraryToBook(item)
     return ok(book)
 }
 
