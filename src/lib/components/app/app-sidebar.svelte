@@ -2,32 +2,36 @@
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import * as Collapsible from "$/lib/components/ui/collapsible/index.js";
   import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
-  import type { ComponentProps } from "svelte";
   import HouseIcon from "@lucide/svelte/icons/house";
   import User from "@lucide/svelte/icons/user";
+
+  interface Props {
+    authors: (string | null)[];
+  }
+  let { authors }: Props = $props();
 
   export const navData = {
     nav: [
       {
         title: "Library",
-        url: "#",
+        url: "/",
         icons: HouseIcon,
         items: [
           {
             title: "To-Read",
-            url: "#to-read",
+            url: "?status=to-read",
           },
           {
             title: "Reading",
-            url: "#reading",
+            url: "?status=reading",
           },
           {
             title: "Finished",
-            url: "#finished",
+            url: "?status=finished",
           },
           {
             title: "Dropped",
-            url: "#dropped",
+            url: "?status=dropped",
           },
         ],
       },
@@ -35,18 +39,18 @@
         title: "Authors",
         url: "#",
         icons: User,
-        items: [],
+        items: authors
+          .filter((a) => a !== null)
+          .map((author) => ({
+            title: author,
+            url: `?author=${encodeURIComponent(author)}`,
+          })),
       },
     ],
   };
-
-  let {
-    ref = $bindable(null),
-    ...restProps
-  }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
-<Sidebar.Root bind:ref {...restProps}>
+<Sidebar.Root>
   <Sidebar.Header class="py-4">
     <h1
       class="text-center scroll-m-20 text-2xl font-semibold tracking-tight transition-colors first:mt-0"
