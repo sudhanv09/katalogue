@@ -2,14 +2,15 @@ import { db } from "$lib/server/db";
 import { library, history } from "$lib/server/db/schema";
 import { eq, desc } from 'drizzle-orm';
 import { libraryToBook } from "../helpers";
+import { type Book } from "../types/book";
+import { type Result, ok, err } from '../types/result'
 
-
-export async function get_books() {
+export async function get_books(): Promise<Book[]> {
     const items = await db.select().from(library);
-    return await Promise.all(items.map(libraryToBook))
+    return Promise.all(items.map(libraryToBook))
 }
 
-export async function get_authors() {
+export async function get_authors(): Promise<(string | null)[]> {
     const result = await db.select({ author: library.author })
         .from(library)
         .groupBy(library.author);
@@ -17,18 +18,30 @@ export async function get_authors() {
     return result.map(row => row.author);
 }
 
-export async function get_author_books(author: string) {
-    return await db
-        .select()
-        .from(library)
-        .where(eq(library.author, author));
+export async function get_author_books(author: string): Promise<Result<Book[], Error>> {
+    const item = await db.query.library.findMany({
+        where: eq(library.author, author)
+    })
+
+    if (!item) {
+        return err(new Error(`Books by ${author} not found`))
+    }
+
+    const book = await Promise.all(item.map(libraryToBook))
+    return ok(book)
 }
 
-export async function get_book_by_id(id: string) {
-    return await db
-        .select()
-        .from(library)
-        .where(eq(library.id, id));
+export async function get_book_by_id(id: string): Promise<Result<Book, Error>> {
+    const item = await db.query.library.findFirst({
+        where: eq(library.id, id)
+    })
+
+    if (!item) {
+        return err(new Error(`Book with id ${id} not found`))
+    }
+
+    const book = await libraryToBook(item)
+    return ok(book)
 }
 
 export async function get_book_toc(id: string) { }
