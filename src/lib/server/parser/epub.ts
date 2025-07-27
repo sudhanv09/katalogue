@@ -144,6 +144,20 @@ export class EpubReader {
         return this.cover
     }
 
+    getResourceByHref(href: string): {data: Uint8Array; mediaType: string} | undefined {
+    const item = [...this.manifestMap.values()].find((i) => i['@_href'] === href);
+    if (!item) return undefined;
+
+    const path = this.resolveRelativePath(this.opfPath, item);
+    const data = this.zip[path];
+
+    if (!data) return undefined;
+    return {
+      data,
+      mediaType: item['@_media-type'],
+    };
+  }
+
     private resolveRelativePath(base: string, relative: string): string {
         const baseDir = base.split('/').slice(0, -1).join('/')
         return baseDir ? `${baseDir}/${relative}` : relative

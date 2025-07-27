@@ -25,6 +25,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/better-sqlite3": "^7.6.13",
+		"@types/jsdom": "^21.1.7",
 		"@types/node": "^20.19.9",
 		"bits-ui": "^2.8.11",
 		"clsx": "^2.1.1",
@@ -46,6 +47,7 @@
 		"drizzle-orm": "^0.40.1",
 		"fast-xml-parser": "^5.2.5",
 		"fflate": "^0.8.2",
+		"jsdom": "^26.1.0",
 		"nanoid": "^5.1.5"
 	},
 	"pnpm": {
