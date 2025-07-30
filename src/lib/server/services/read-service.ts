@@ -3,10 +3,10 @@ import { db } from "../db";
 import { library } from "../db/schema";
 import { err, ok, type Result } from "../types/result";
 import { UPLOAD_DIR } from "$/consts";
-import { join } from "path";
+import path, { join } from "path";
 import fs from "fs/promises";
 import { readBook, EpubReader } from "../parser/epub";
-import { JSDOM } from "jsdom";
+import { JSDOM } from 'jsdom';
 
 type BookContent = {
   chapter: {
@@ -39,6 +39,11 @@ export async function get_file(dir: string): Promise<Result<EpubReader, Error>> 
   }
 }
 
+function normalizePath(p: string): string {
+  return path.posix.normalize(p).replace(/^(\.\.\/|\.\/)+/, '');
+}
+
+
 function intercept_html_resources(
   html: string,
   bookId: string
@@ -50,10 +55,21 @@ function intercept_html_resources(
   document.querySelectorAll("img").forEach((img) => {
     const src = img.getAttribute("src");
     if (src) {
-      const encodedSrc = encodeURIComponent(src);
+      const normalized = normalizePath(src);
+      const encodedSrc = encodeURIComponent(normalized);
       img.setAttribute("src", `/api/book/${bookId}/resource/${encodedSrc}`);
     }
   });
+
+  document.querySelectorAll("image").forEach((image) => {
+    const href = image.getAttribute("xlink:href") || image.getAttribute("href");
+    if (href) {
+      const normalized = normalizePath(href);
+      const encodedHref = encodeURIComponent(normalized);
+      image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", `/api/book/${bookId}/resource/${encodedHref}`);
+    }
+  });
+
 
   document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
     const href = link.getAttribute("href");
@@ -116,7 +132,7 @@ export async function start_book(
 
   const book = result.value;
   const firstChapter = book.getChapters()[0];
-  const startChapterId = item.currentChapterId || firstChapter?.id;
+  const startChapterId = item.progress === 0 ? firstChapter?.id : item.progress?.toString();
 
   if (!startChapterId) {
     return err(new Error("Book has no chapters."));
@@ -125,4 +141,4 @@ export async function start_book(
   return get_chapter(id, startChapterId);
 }
 
-export async function get_book_toc(id: string) {}
+export async function get_book_toc(id: string) { }
