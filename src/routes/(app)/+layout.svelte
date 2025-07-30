@@ -2,7 +2,7 @@
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import AppSidebar from "@/components/app/app-sidebar.svelte";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
-  import "../app.css";
+  import "$/app.css";
   import type { LayoutProps } from "./$types";
 
   let { children, data }: LayoutProps = $props();

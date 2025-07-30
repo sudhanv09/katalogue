@@ -1,6 +1,6 @@
 <script lang="ts">
   import Navbar from "@/components/app/navbar.svelte";
-  import type { PageProps } from "./$types";
+  import type { PageProps } from "../$types";
   import BookCard from "@/components/app/book-card.svelte";
 
   let { data }: PageProps = $props();
