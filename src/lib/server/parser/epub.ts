@@ -125,7 +125,7 @@ export class EpubReader {
     }
 
     getToc() {
-        return this.chapters.map(c => ({ title: c.title, id: c.id }))
+        return this.chapters.map(c => ({ title: c.title, id: c.id, href: c.href }))
     }
 
     getCss(): ManifestItem[] {

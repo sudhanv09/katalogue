@@ -6,7 +6,7 @@ import { UPLOAD_DIR } from "$/consts";
 import path, { join } from "path";
 import fs from "fs/promises";
 import { readBook, EpubReader } from "../parser/epub";
-import { JSDOM } from 'jsdom';
+import { JSDOM } from "jsdom";
 
 type BookContent = {
   chapter: {
@@ -14,11 +14,12 @@ type BookContent = {
     title: string;
     html: string;
   };
-  cssPaths: string[];
-  toc: { id: string; title: string }[];
+  toc: { id: string; title: string, href: string }[];
 };
 
-export async function get_file(dir: string): Promise<Result<EpubReader, Error>> {
+export async function get_file(
+  dir: string
+): Promise<Result<EpubReader, Error>> {
   try {
     const fullPath = join(UPLOAD_DIR, dir);
     const files = await fs.readdir(fullPath);
@@ -40,14 +41,10 @@ export async function get_file(dir: string): Promise<Result<EpubReader, Error>> 
 }
 
 function normalizePath(p: string): string {
-  return path.posix.normalize(p).replace(/^(\.\.\/|\.\/)+/, '');
+  return path.posix.normalize(p).replace(/^(\.\.\/|\.\/)+/, "");
 }
 
-
-function intercept_html_resources(
-  html: string,
-  bookId: string
-): { cleanHtml: string; cssPaths: string[] } {
+function intercept_html_resources(html: string, bookId: string): string {
   const dom = new JSDOM(html);
   const document = dom.window.document;
   const cssPaths: string[] = [];
@@ -66,10 +63,13 @@ function intercept_html_resources(
     if (href) {
       const normalized = normalizePath(href);
       const encodedHref = encodeURIComponent(normalized);
-      image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", `/api/book/${bookId}/resource/${encodedHref}`);
+      image.setAttributeNS(
+        "http://www.w3.org/1999/xlink",
+        "xlink:href",
+        `/api/book/${bookId}/resource/${encodedHref}`
+      );
     }
   });
-
 
   document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
     const href = link.getAttribute("href");
@@ -80,10 +80,7 @@ function intercept_html_resources(
     link.remove();
   });
 
-  return {
-    cleanHtml: document.body.innerHTML,
-    cssPaths,
-  };
+  return document.body.innerHTML;
 }
 
 export async function get_chapter(
@@ -104,10 +101,7 @@ export async function get_chapter(
     return err(new Error(`Chapter ${chapterId} not found in book ${bookId}`));
   }
 
-  const { cleanHtml, cssPaths } = intercept_html_resources(
-    chapter.content,
-    bookId
-  );
+  const cleanHtml = intercept_html_resources(chapter.content, bookId);
 
   return ok({
     chapter: {
@@ -115,7 +109,6 @@ export async function get_chapter(
       title: chapter.title,
       html: cleanHtml,
     },
-    cssPaths: cssPaths,
     toc: book.getToc(),
   });
 }
@@ -132,7 +125,8 @@ export async function start_book(
 
   const book = result.value;
   const firstChapter = book.getChapters()[0];
-  const startChapterId = item.progress === 0 ? firstChapter?.id : item.progress?.toString();
+  const startChapterId =
+    item.progress === 0 ? firstChapter?.id : item.progress?.toString();
 
   if (!startChapterId) {
     return err(new Error("Book has no chapters."));
@@ -140,5 +134,3 @@ export async function start_book(
 
   return get_chapter(id, startChapterId);
 }
-
-export async function get_book_toc(id: string) { }
