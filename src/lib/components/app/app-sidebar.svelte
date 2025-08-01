@@ -19,19 +19,19 @@
         items: [
           {
             title: "To-Read",
-            url: "?status=to-read",
+            url: "/?status=to-read",
           },
           {
             title: "Reading",
-            url: "?status=reading",
+            url: "/?status=reading",
           },
           {
             title: "Finished",
-            url: "?status=finished",
+            url: "/?status=finished",
           },
           {
             title: "Dropped",
-            url: "?status=dropped",
+            url: "/?status=dropped",
           },
         ],
       },
@@ -43,7 +43,7 @@
           .filter((a) => a !== null)
           .map((author) => ({
             title: author,
-            url: `?author=${encodeURIComponent(author)}`,
+            url: `/?author=${encodeURIComponent(author)}`,
           })),
       },
     ],
