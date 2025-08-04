@@ -20,8 +20,8 @@
   const navChp = (direction: "prev" | "next") => {
     const { params, data } = page;
     const toc: { id: string; title: string; href: string }[] = data.item.toc;
-    console.log(toc);
-    const index = getChpIndex(toc, params.id);
+    const currentId = data.item.chapter.id;
+    const index = getChpIndex(toc, currentId);
 
     if (index === -1) return;
 
