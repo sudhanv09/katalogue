@@ -3,6 +3,6 @@
   let { data }: PageProps = $props();
 </script>
 
-<section class="grid columns-3 h-full">
+<section class="p-16 h-full">
   {@html data.item.chapter.html}
 </section>
