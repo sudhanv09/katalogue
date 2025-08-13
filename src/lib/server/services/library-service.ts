@@ -76,3 +76,63 @@ export async function drop_book(id: string) {
         .where(eq(library.id, id))
 }
 
+export async function updateBookProgress(
+    bookId: string,
+    progress: number,
+    status?: "reading" | "finished"
+): Promise<Result<void, Error>> {
+    try {
+        if (progress < 0 || progress > 100) {
+            return err(new Error("Progress must be between 0 and 100"));
+        }
+
+        const bookExists = await db.query.library.findFirst({
+            where: eq(library.id, bookId)
+        });
+
+        if (!bookExists) {
+            return err(new Error(`Book with id ${bookId} not found`));
+        }
+
+        await db.transaction(async (tx) => {
+            const updateData: any = { progress };
+            if (status) {
+                updateData.read_status = status;
+            }
+
+            await tx
+                .update(library)
+                .set(updateData)
+                .where(eq(library.id, bookId));
+
+            await tx.insert(history).values({
+                library_id: bookId
+            });
+        });
+
+        return ok(undefined);
+    } catch (error) {
+        return err(error instanceof Error ? error : new Error("Failed to update book progress"));
+    }
+}
+
+export async function createHistoryEntry(bookId: string): Promise<Result<void, Error>> {
+    try {
+        const bookExists = await db.query.library.findFirst({
+            where: eq(library.id, bookId)
+        });
+
+        if (!bookExists) {
+            return err(new Error(`Book with id ${bookId} not found`));
+        }
+
+        await db.insert(history).values({
+            library_id: bookId
+        });
+
+        return ok(undefined);
+    } catch (error) {
+        return err(error instanceof Error ? error : new Error("Failed to create history entry"));
+    }
+}
+

@@ -7,6 +7,7 @@ import path, { join } from "path";
 import fs from "fs/promises";
 import { readBook, EpubReader } from "../parser/epub";
 import { JSDOM } from "jsdom";
+import { updateBookProgress, createHistoryEntry } from "./library-service";
 
 type BookContent = {
   chapter: {
@@ -31,7 +32,7 @@ export async function get_file(
 
     const epubPath = join(fullPath, epubFile);
     const buffer = await fs.readFile(epubPath);
-    const file = new File([buffer], epubFile);
+    const file = new File([new Uint8Array(buffer)], epubFile);
     const book = await readBook(file);
 
     return ok(book);
@@ -101,6 +102,29 @@ export async function get_chapter(
     return err(new Error(`Chapter ${chapterId} not found in book ${bookId}`));
   }
 
+  // update progress
+  const total_chapters = book.getChapters();
+  if (total_chapters.length === 0) {
+    return err(new Error("Book has no chapters"));
+  }
+
+  const currentChapterIndex = total_chapters.findIndex(chp => chapter.id === chapterId);
+  if (currentChapterIndex === -1) {
+    return err(new Error(`Chapter ${chapterId} not found in book`));
+  }
+
+  const progress = Math.round(((currentChapterIndex + 1) / total_chapters.length) * 100);
+  let status: "reading" | "finished" | undefined;
+  if (progress >= 100) {
+    status = "finished";
+  } else if (item.read_status === "to-read") {
+    status = "reading";
+  }
+  const success = await updateBookProgress(bookId, progress, status);
+  if (!success.ok) {
+    return err(new Error(`Failed to update progress: ${success.error}`));
+  }
+
   const cleanHtml = intercept_html_resources(chapter.content, bookId);
 
   return ok({
@@ -113,12 +137,76 @@ export async function get_chapter(
   });
 }
 
+export async function updateProgressByChapter(
+  bookId: string,
+  currentChapterId: string
+): Promise<Result<void, Error>> {
+  try {
+    const item = await db.query.library.findFirst({
+      where: eq(library.id, bookId)
+    });
+
+    if (!item || !item.dir) {
+      return err(new Error(`Book with id ${bookId} not found`));
+    }
+
+    const bookResult = await get_file(item.dir);
+    if (!bookResult.ok) {
+      return err(bookResult.error);
+    }
+
+    const book = bookResult.value;
+    const chapters = book.getChapters();
+
+    if (chapters.length === 0) {
+      return err(new Error("Book has no chapters"));
+    }
+
+    const currentChapterIndex = chapters.findIndex(chapter => chapter.id === currentChapterId);
+    if (currentChapterIndex === -1) {
+      return err(new Error(`Chapter ${currentChapterId} not found in book`));
+    }
+
+    const progress = Math.round(((currentChapterIndex + 1) / chapters.length) * 100);
+
+    let status: "reading" | "finished" | undefined;
+    if (progress >= 100) {
+      status = "finished";
+    } else if (item.read_status === "to-read") {
+      status = "reading";
+    }
+
+    const updateResult = await updateBookProgress(bookId, progress, status);
+    if (!updateResult.ok) {
+      return err(updateResult.error);
+    }
+
+    return ok(undefined);
+  } catch (error) {
+    return err(error instanceof Error ? error : new Error("Failed to update progress by chapter"));
+  }
+}
+
 export async function start_book(
   id: string
 ): Promise<Result<BookContent, Error>> {
   const item = await db.query.library.findFirst({ where: eq(library.id, id) });
 
   if (!item || !item.dir) return err(new Error(`Item ${id} not found`));
+
+  // Mark book as reading when user starts reading
+  if (item.read_status === "to-read") {
+    const updateResult = await updateBookProgress(item.id, item.progress || 0, "reading");
+    if (!updateResult.ok) {
+      return err(updateResult.error);
+    }
+  } else {
+    // Still create history entry even if status doesn't change
+    const historyResult = await createHistoryEntry(item.id);
+    if (!historyResult.ok) {
+      return err(historyResult.error);
+    }
+  }
 
   const result = await get_file(item.dir);
   if (!result.ok) return err(result.error);
