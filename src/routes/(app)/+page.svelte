@@ -8,7 +8,6 @@
 
   let { data }: PageProps = $props();
 
-  // Create a derived store that reactively filters books based on search term
   const filteredBooks = derived(
     debouncedSearchTerm,
     ($searchTerm) => filterBooks(data.books, $searchTerm)

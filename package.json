@@ -44,7 +44,7 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"better-sqlite3": "^12.2.0",
+		"@libsql/client": "^0.15.10",
 		"drizzle-orm": "^0.44.4",
 		"fast-xml-parser": "^5.2.5",
 		"fflate": "^0.8.2",
