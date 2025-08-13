@@ -2,8 +2,17 @@
   import Navbar from "@/components/app/navbar.svelte";
   import type { PageProps } from "./$types";
   import BookCard from "@/components/app/book-card.svelte";
+  import { debouncedSearchTerm } from "$lib/stores/search.js";
+  import { filterBooks } from "$lib/utils/book-filter.js";
+  import { derived } from "svelte/store";
 
   let { data }: PageProps = $props();
+
+  // Create a derived store that reactively filters books based on search term
+  const filteredBooks = derived(
+    debouncedSearchTerm,
+    ($searchTerm) => filterBooks(data.books, $searchTerm)
+  );
 </script>
 
 <main class="h-dvh w-full">
@@ -13,11 +22,15 @@
     <div class="flex items-center justify-center h-full">
       <p class="text-center text-muted-foreground">Such emptiness</p>
     </div>
+  {:else if $filteredBooks.length === 0}
+    <div class="flex items-center justify-center h-full">
+      <p class="text-center text-muted-foreground">No books found matching your search</p>
+    </div>
   {:else}
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-4"
     >
-      {#each data.books as book}
+      {#each $filteredBooks as book}
         <BookCard {book} />
       {/each}
     </div>

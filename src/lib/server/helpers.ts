@@ -45,11 +45,13 @@ async function resolveCoverPath(dir?: string, coverPath?: string | null): Promis
 export async function libraryToBook(row: LibraryRow): Promise<Book> {
     return {
         id: row.id,
-        title: row.title ?? '',
-        author: row.author ?? '',
-        description: row.description ?? '',
+        title: row.title,
+        author: row.author,
+        description: row.description,
         read_status: row.read_status ?? 'to-read',
-        progress: row.progress ?? 0,
+        progress: row.progress,
+        cover_path: row.cover_path,
+        dir: row.dir,
         cover: await resolveCoverPath(row.dir ?? '', row.cover_path),
     };
 }

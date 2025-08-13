@@ -3,8 +3,8 @@
   import Separator from "../ui/separator/separator.svelte";
   import { SidebarTrigger } from "$lib/components/ui/sidebar/index.js";
   import UploadForm from "./upload-form.svelte";
+  import { searchTerm, updateSearchTerm } from "$lib/stores/search.js";
 
-  let search_text = $state("");
   let form = $props();
 </script>
 
@@ -21,7 +21,8 @@
     <Input
       type="text"
       placeholder="Search"
-      bind:value={search_text}
+      bind:value={$searchTerm}
+      oninput={(e) => updateSearchTerm(e.currentTarget.value)}
       class="peer block w-full rounded-md border py-[9px] pl-10 text-sm"
     />
     <UploadForm {form}/>
