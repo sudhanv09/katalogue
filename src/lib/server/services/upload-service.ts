@@ -22,7 +22,7 @@ export async function upload_file(files: File[]) {
         const cover = book.getCover();
 
         // check if the book already exists first
-        const existing = db
+        const existing = await db
             .select()
             .from(library)
             .where(
@@ -35,6 +35,7 @@ export async function upload_file(files: File[]) {
 
         if (existing) {
             results.push({
+                id: file.name,
                 status: 'error',
                 error: 'Duplicate item'
             })
