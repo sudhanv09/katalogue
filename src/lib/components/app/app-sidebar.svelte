@@ -82,7 +82,7 @@
                   <Sidebar.MenuItem>
                     <Sidebar.MenuButton>
                       {#snippet child({ props })}
-                        <a href={subItem.url} {...props}>
+                        <a data-sveltekit-reload href={subItem.url} {...props}>
                           <span>{subItem.title}</span>
                         </a>
                       {/snippet}
