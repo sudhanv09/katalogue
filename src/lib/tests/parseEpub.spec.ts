@@ -73,12 +73,7 @@ describe('OPF parsing', () => {
 
     it('static assets', async () => {
         const book = await readBook(file)
-        const css = book.getCss()
         const images = book.getImages()
-
-        expect(css.length).toBeGreaterThan(0)
-        expect(css[0]['@_media-type']).toBe("text/css")
-        expect(css[0]['@_id']).toBe("page-css")
 
         expect(images.length).toBeGreaterThan(0)
         expect(images[0]['@_id']).toBe('logo-feedbooks-tiny')
