@@ -212,12 +212,21 @@ export async function start_book(
   if (!result.ok) return err(result.error);
 
   const book = result.value;
-  const firstChapter = book.getChapters()[0];
-  const startChapterId =
-    item.progress === 0 ? firstChapter?.id : item.progress?.toString();
-
-  if (!startChapterId) {
+  const chapters = book.getChapters();
+  
+  if (chapters.length === 0) {
     return err(new Error("Book has no chapters."));
+  }
+
+  let startChapterId: string;
+  if (!item.progress || item.progress === 0) {
+    // Start from the beginning
+    startChapterId = chapters[0].id;
+  } else {
+    // Calculate chapter index from progress percentage
+    const chapterIndex = Math.floor((item.progress / 100) * chapters.length);
+    const safeIndex = Math.min(chapterIndex, chapters.length - 1);
+    startChapterId = chapters[safeIndex].id;
   }
 
   return get_chapter(id, startChapterId);
