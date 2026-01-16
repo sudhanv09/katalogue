@@ -37,7 +37,9 @@
 </script>
 
 <header class="flex w-full items-center justify-between px-4 py-2">
-  <TocDrawer id={page.params.id} toc_data={page.data.item.toc} />
+  <div class="flex-1">
+    <TocDrawer id={page.params.id} toc_data={page.data.item.toc} />
+  </div>
   <div class="flex items-center space-x-6">
     <Button onclick={() => navChp("prev")}>
       <ChevronLeft />
@@ -47,7 +49,7 @@
       <ChevronRight />
     </Button>
   </div>
-  <div></div>
+  <div class="flex-1"></div>
 </header>
 
 {@render children()}
