@@ -10,12 +10,14 @@ import { JSDOM } from "jsdom";
 import { updateBookProgress, createHistoryEntry } from "./library-service";
 
 type BookContent = {
+  bookId: string;
   chapter: {
     id: string;
     title: string;
     html: string;
   };
   toc: { id: string; title: string, href: string }[];
+  currentPage?: number;
 };
 
 export async function get_file(
@@ -128,12 +130,14 @@ export async function get_chapter(
   const cleanHtml = intercept_html_resources(chapter.content, bookId);
 
   return ok({
+    bookId,
     chapter: {
       id: chapter.id,
       title: chapter.title,
       html: cleanHtml,
     },
     toc: book.getToc(),
+    currentPage: item.current_chapter_id === chapterId ? (item.current_page ?? 0) : 0,
   });
 }
 
@@ -219,7 +223,10 @@ export async function start_book(
   }
 
   let startChapterId: string;
-  if (!item.progress || item.progress === 0) {
+  if (item.current_chapter_id && chapters.find(c => c.id === item.current_chapter_id)) {
+    // Resume from saved position
+    startChapterId = item.current_chapter_id;
+  } else if (!item.progress || item.progress === 0) {
     // Start from the beginning
     startChapterId = chapters[0].id;
   } else {
