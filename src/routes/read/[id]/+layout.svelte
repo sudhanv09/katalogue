@@ -27,7 +27,6 @@
 
     const targetIndex = direction === "prev" ? index - 1 : index + 1;
     const target = toc[targetIndex];
-    console.log(target);
 
     if (target) {
       const newUrl = `?id=${target.id}`;
