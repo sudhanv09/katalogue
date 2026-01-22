@@ -3,7 +3,7 @@
   let { data }: PageProps = $props();
 </script>
 
-<section class="p-16 h-full">
+<section class="px-4 py-4 columns-2 gap-4 overflow-x-auto overflow-y-hidden h-[calc(100vh-52px)]">
   {@html data.item.chapter.html}
 </section>
 
