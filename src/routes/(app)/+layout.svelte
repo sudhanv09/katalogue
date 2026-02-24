@@ -2,6 +2,7 @@
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import AppSidebar from "@/components/app/app-sidebar.svelte";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { ModeWatcher } from "mode-watcher";
   import "$/app.css";
   import type { LayoutProps } from "./$types";
 
@@ -9,6 +10,7 @@
 </script>
 
 <Toaster richColors />
+<ModeWatcher />
 
 <Sidebar.Provider>
   <AppSidebar authors={data.authors}/>
