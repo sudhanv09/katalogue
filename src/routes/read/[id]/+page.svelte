@@ -8,12 +8,21 @@
   let contentContainer: HTMLElement;
   let currentPage = $state(0);
   let totalPages = $state(0);
-  let isCalculating = $state(false);
+
+  function pageWidth() {
+    if (!contentContainer) return 0;
+    const padding = getHorizontalPadding(contentContainer);
+    return contentContainer.clientWidth - padding + 32;
+  }
+
+  function applyCurrentPageScroll() {
+    if (!contentContainer) return;
+    contentContainer.scrollLeft = pageWidth() * currentPage;
+  }
   
   async function calculatePages() {
     if (!contentContainer) return;
     
-    isCalculating = true;
     await tick();
     
     const containerHeight = contentContainer.clientHeight;
@@ -25,8 +34,8 @@
     } else {
       currentPage = 0;
     }
-    
-    isCalculating = false;
+
+    applyCurrentPageScroll();
   }
 
   function getHorizontalPadding(el: HTMLElement) {
@@ -40,9 +49,8 @@
   async function nextPage() {
     if (currentPage < totalPages - 1) {
       currentPage++;
-      const padding = getHorizontalPadding(contentContainer);
-      contentContainer.scrollLeft += contentContainer.clientWidth - padding + 32;
-      // await savePosition();
+      applyCurrentPageScroll();
+      await savePosition();
     } else {
       const toc = data.item.toc;
       const currentId = data.item.chapter.id;
@@ -57,9 +65,8 @@
   async function prevPage() {
     if (currentPage > 0) {
       currentPage--;
-      const padding = getHorizontalPadding(contentContainer);
-      contentContainer.scrollLeft -= contentContainer.clientWidth - padding;
-      // await savePosition();
+      applyCurrentPageScroll();
+      await savePosition();
     } else {
       const toc = data.item.toc;
       const currentId = data.item.chapter.id;
@@ -108,6 +115,7 @@
       const interval = setInterval(() => {
         if (totalPages > 0) {
           currentPage = totalPages - 1;
+          applyCurrentPageScroll();
           savePosition();
           clearInterval(interval);
           const newUrl = window.location.pathname + '?id=' + params.get('id');

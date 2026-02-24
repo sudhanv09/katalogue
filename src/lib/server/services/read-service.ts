@@ -127,8 +127,21 @@ export async function get_chapter(
     return err(new Error(`Failed to update progress: ${success.error}`));
   }
 
-  const cleanHtml = intercept_html_resources(chapter.content, bookId);
+  const restoredPage = item.current_chapter_id === chapterId ? (item.current_page ?? 0) : 0;
+  const positionResult = await db
+    .update(library)
+    .set({
+      current_chapter_id: chapterId,
+      current_page: restoredPage,
+    })
+    .where(eq(library.id, bookId));
 
+  if (!positionResult.rowsAffected) {
+    return err(new Error(`Failed to update current chapter for ${bookId}`));
+  }
+
+  const cleanHtml = intercept_html_resources(chapter.content, bookId);
+  
   return ok({
     bookId,
     chapter: {
@@ -137,7 +150,7 @@ export async function get_chapter(
       html: cleanHtml,
     },
     toc: book.getToc(),
-    currentPage: item.current_chapter_id === chapterId ? (item.current_page ?? 0) : 0,
+    currentPage: restoredPage,
   });
 }
 
@@ -230,9 +243,8 @@ export async function start_book(
     // Start from the beginning
     startChapterId = chapters[0].id;
   } else {
-    // Calculate chapter index from progress percentage
-    const chapterIndex = Math.floor((item.progress / 100) * chapters.length);
-    const safeIndex = Math.min(chapterIndex, chapters.length - 1);
+    const chapterIndex = Math.ceil((item.progress / 100) * chapters.length) - 1;
+    const safeIndex = Math.max(0, Math.min(chapterIndex, chapters.length - 1));
     startChapterId = chapters[safeIndex].id;
   }
 
