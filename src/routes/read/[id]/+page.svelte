@@ -22,7 +22,6 @@
   
   async function calculatePages() {
     if (!contentContainer) return;
-    
     await tick();
     
     const containerHeight = contentContainer.clientHeight;
@@ -100,6 +99,9 @@
     } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
       e.preventDefault();
       prevPage();
+    } else if (e.key === 'q') {
+      e.preventDefault();
+      goto('/');
     }
   }
   

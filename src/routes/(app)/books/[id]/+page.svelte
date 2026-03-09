@@ -16,7 +16,7 @@
     </h3>
     <p class="text-muted-foreground text-sm">{@html data.book.description}</p>
 
-    <p class="text-md">Progress: {data.book.progress}%</p>
+    <p class="text-xs text-muted-foreground">Progress: {data.book.progress}%</p>
     <div>
       <Button href={`/read/${data.book.id}`}>Read</Button>
     </div>
