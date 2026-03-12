@@ -131,12 +131,16 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="relative h-[calc(100vh-52px)]">
-  <section 
+  <section
     bind:this={contentContainer}
-    class="px-8 py-6 columns-2 gap-8 h-full overflow-x-auto"
+    class="px-8 py-6 columns-2 gap-8 h-[calc(100%-36px)] overflow-x-auto"
   >
     {@html data.item.chapter.html}
   </section>
+
+  <footer class="h-9 flex items-center px-8 text-xs text-muted-foreground border-t">
+    <span>{currentPage + 1} / {totalPages}</span>
+  </footer>
 </div>
 
 <style>
