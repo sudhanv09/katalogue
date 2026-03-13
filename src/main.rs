@@ -21,7 +21,16 @@ pub enum Route {
 }
 
 fn main() {
-    dioxus::launch(App);
+    dioxus::LaunchBuilder::new()
+        .with_cfg(desktop! {
+            dioxus::desktop::Config::new()
+                .with_window(
+                    dioxus::desktop::tao::window::WindowBuilder::new()
+                        .with_title("Katalogue")
+                        .with_decorations(false)
+                )
+        })
+        .launch(App);
 }
 
 #[component]
