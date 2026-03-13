@@ -11,6 +11,7 @@ dioxus = { version = "0.7.1", features = ["router"] }
 epub = "2.1.5"
 rusqlite = { version = "0.38", features = ["bundled"] }
 base64 = "0.22"
+regex = "1"
 chrono = "0.4"
 
 [features]

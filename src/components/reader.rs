@@ -1,7 +1,8 @@
 use dioxus::prelude::*;
 use epub::doc::EpubDoc;
+use regex::Regex;
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use crate::db;
@@ -49,6 +50,67 @@ fn build_spine_map(doc: &EpubDoc<std::io::BufReader<std::fs::File>>) -> HashMap<
         }
     }
     map
+}
+
+/// Resolve a relative path against a base path, handling `..` components
+fn resolve_path(base: &Path, relative: &str) -> PathBuf {
+    let mut path = base.parent().unwrap_or(Path::new("")).to_path_buf();
+    for component in Path::new(relative).components() {
+        match component {
+            std::path::Component::ParentDir => {
+                path.pop();
+            }
+            std::path::Component::Normal(s) => {
+                path.push(s);
+            }
+            _ => {}
+        }
+    }
+    path
+}
+
+/// Replace all src="..." and href="..." in chapter HTML with base64 data URIs
+fn inline_resources(
+    html: &str,
+    doc: &mut EpubDoc<std::io::BufReader<std::fs::File>>,
+) -> String {
+    let current_path = doc.get_current_path().unwrap_or_default();
+
+    // Build path → (mime, id) lookup
+    let path_map: HashMap<PathBuf, (String, String)> = doc
+        .resources
+        .iter()
+        .map(|(id, res)| (res.path.clone(), (res.mime.clone(), id.clone())))
+        .collect();
+
+    let re = Regex::new(r#"(src|href)\s*=\s*"([^"]+)""#).unwrap();
+
+    re.replace_all(html, |caps: &regex::Captures| {
+        let attr = &caps[1];
+        let url = &caps[2];
+
+        // Skip absolute URLs, data URIs, and fragment-only links
+        if url.starts_with("http") || url.starts_with("data:") || url.starts_with('#') {
+            return caps[0].to_string();
+        }
+
+        // Strip fragment identifier
+        let clean_url = url.split('#').next().unwrap_or(url);
+        let resolved = resolve_path(&current_path, clean_url);
+
+        if let Some((mime, id)) = path_map.get(&resolved) {
+            if let Some((data, _)) = doc.get_resource(id) {
+                let b64 = base64::Engine::encode(
+                    &base64::engine::general_purpose::STANDARD,
+                    &data,
+                );
+                return format!("{attr}=\"data:{mime};base64,{b64}\"");
+            }
+        }
+
+        caps[0].to_string()
+    })
+    .to_string()
 }
 
 /// Measure total column-pages via JS eval
@@ -101,12 +163,13 @@ pub fn Reader(id: i64) -> Element {
     // Navigation event: +1 = forward, -1 = backward
     let mut nav_event = use_signal(|| 0_i32);
 
-    // Load chapter HTML
+    // Load chapter HTML with inlined resources
     let content = use_memo(move || {
         let ch = chapter();
         let mut doc = EpubDoc::new(&file_path).ok()?;
         doc.set_current_chapter(ch);
-        doc.get_current_str().map(|(html, _)| html)
+        let (html, _) = doc.get_current_str()?;
+        Some(inline_resources(&html, &mut doc))
     });
 
     // Build TOC entries with hierarchy
