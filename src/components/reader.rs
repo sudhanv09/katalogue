@@ -55,11 +55,10 @@ fn build_spine_map(doc: &EpubDoc<std::io::BufReader<std::fs::File>>) -> HashMap<
 async fn measure_pages() -> i32 {
     let mut js = document::eval(
         r#"
-        const container = document.getElementById('page-container');
         const content = document.getElementById('book-content');
-        if (!container || !content) { dioxus.send(1); return; }
+        if (!content) { dioxus.send(1); return; }
         const gap = 64;
-        const spreadWidth = container.offsetWidth + gap;
+        const spreadWidth = content.offsetWidth + gap;
         const pages = Math.max(1, Math.ceil(content.scrollWidth / spreadWidth));
         dioxus.send(pages);
         "#,
@@ -133,11 +132,10 @@ pub fn Reader(id: i64) -> Element {
         spawn(async move {
             document::eval(&format!(
                 r#"
-                const container = document.getElementById('page-container');
                 const content = document.getElementById('book-content');
-                if (container && content) {{
+                if (content) {{
                     const gap = 64;
-                    const spreadWidth = container.offsetWidth + gap;
+                    const spreadWidth = content.offsetWidth + gap;
                     content.style.transform = 'translateX(-' + ({p} * spreadWidth) + 'px)';
                 }}
                 "#
